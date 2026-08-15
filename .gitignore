@@ -141,3 +141,48 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# ---------------------------------------------------------------------------
+# MorningBrew — local privacy
+#
+# This dashboard aggregates real task content from work systems. Nothing below
+# should ever reach the remote; the patterns are deliberately broad.
+# ---------------------------------------------------------------------------
+
+# Secrets. `.env`/`.env.*` are covered above; these catch the rest.
+*.local
+.env.local
+.env.*.local
+secrets/
+*.pem
+*.key
+!.env.example
+
+# Local task cache, sync state, and plan history — contains real task titles,
+# notes, and assignee names pulled from Monday and elsewhere.
+.morningbrew/
+*.morningbrew.json
+data/
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.db
+
+# Plugin credential stores and per-machine source config
+.morningbrew-credentials
+config.local.*
+packages/*/config.local.*
+
+# Logs may contain task content when MORNINGBREW_REDACT_LOGS=false
+*.log
+logs/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# mise local overrides
+.mise.local.toml
+mise.local.toml

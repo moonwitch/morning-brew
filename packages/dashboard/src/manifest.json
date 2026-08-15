@@ -1,0 +1,43 @@
+{
+  "name": "MorningBrew — Anti-Overwhelm Task Planner",
+  "short_name": "MorningBrew",
+  "description": "Modular, plugin-based task aggregator and day-planning application built for neurodivergent focus.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#140f0c",
+  "theme_color": "#140f0c",
+  "icons": [
+    {
+      "src": "./pwa-icon.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "./pwa-icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./apple-touch-icon.jpg",
+      "sizes": "180x180",
+      "type": "image/jpeg"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Quick Capture",
+      "short_name": "Capture",
+      "description": "Quickly capture a task with shorthand syntax",
+      "url": "/?action=capture"
+    },
+    {
+      "name": "Calendar Schedule",
+      "short_name": "Calendar",
+      "description": "View today's meetings and focus gaps",
+      "url": "/?tab=calendar"
+    }
+  ]
+}
