@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  morningbrew:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: morningbrew
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - MORNINGBREW_DATA_DIR=/app/data
+      - MORNINGBREW_LOG_LEVEL=info
+      - MORNINGBREW_REDACT_LOGS=true
+    volumes:
+      - morningbrew_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  morningbrew_data:
