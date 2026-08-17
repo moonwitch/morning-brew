@@ -1,7 +1,8 @@
 import React from "react";
 import type { IntegrationSource } from "./SourceManager.tsx";
 import { renderSourceIcon } from "./SourceManager.tsx";
-import { Settings, X, Check, Plus, Users, BarChart2, Briefcase, User } from "lucide-react";
+import type { ThemePreference } from "../App.tsx";
+import { Settings, X, Check, Plus, Users, BarChart2, Briefcase, User, Laptop, Moon, Sun } from "lucide-react";
 
 export type UseCaseMode = "work_and_personal" | "personal_only";
 
@@ -14,6 +15,8 @@ interface SettingsModalProps {
   onToggleMoodReflection: () => void;
   useCaseMode: UseCaseMode;
   onSelectUseCaseMode: (mode: UseCaseMode) => void;
+  themePref: ThemePreference;
+  onSelectThemePref: (pref: ThemePreference) => void;
   onOpenCaregivers: () => void;
   onOpenWeeklyReport: () => void;
 }
@@ -27,6 +30,8 @@ export function SettingsModal({
   onToggleMoodReflection,
   useCaseMode,
   onSelectUseCaseMode,
+  themePref,
+  onSelectThemePref,
   onOpenCaregivers,
   onOpenWeeklyReport,
 }: SettingsModalProps) {
@@ -46,6 +51,82 @@ export function SettingsModal({
           <button type="button" className="action-btn" onClick={onClose}>
             <X size={16} />
           </button>
+        </div>
+
+        {/* Theme Preference Setting */}
+        <div style={{ marginBottom: "1rem" }}>
+          <h3 style={{ fontSize: "1rem", marginBottom: "0.5rem" }}>Theme & Color Scheme</h3>
+          <div
+            style={{
+              backgroundColor: "var(--bg-card)",
+              border: "1px solid var(--border-subtle)",
+              borderRadius: "var(--radius-md)",
+              padding: "1rem 1.25rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.75rem",
+            }}
+          >
+            <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
+              Choose your default theme mode. System mode automatically detects your OS light/dark preference.
+            </div>
+
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <button
+                type="button"
+                className="action-btn"
+                style={{
+                  flex: 1,
+                  backgroundColor: themePref === "system" ? "var(--accent-amber)" : "var(--bg-input)",
+                  color: themePref === "system" ? "#140f0c" : "var(--text-secondary)",
+                  fontWeight: 700,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "0.4rem",
+                }}
+                onClick={() => onSelectThemePref("system")}
+              >
+                <Laptop size={15} /> System OS Auto
+              </button>
+
+              <button
+                type="button"
+                className="action-btn"
+                style={{
+                  flex: 1,
+                  backgroundColor: themePref === "dark" ? "var(--accent-amber)" : "var(--bg-input)",
+                  color: themePref === "dark" ? "#140f0c" : "var(--text-secondary)",
+                  fontWeight: 700,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "0.4rem",
+                }}
+                onClick={() => onSelectThemePref("dark")}
+              >
+                <Moon size={15} /> Coffee Dark
+              </button>
+
+              <button
+                type="button"
+                className="action-btn"
+                style={{
+                  flex: 1,
+                  backgroundColor: themePref === "light" ? "var(--accent-amber)" : "var(--bg-input)",
+                  color: themePref === "light" ? "#140f0c" : "var(--text-secondary)",
+                  fontWeight: 700,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "0.4rem",
+                }}
+                onClick={() => onSelectThemePref("light")}
+              >
+                <Sun size={15} /> Warm Light
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Work vs Personal Mode Toggle */}
@@ -209,7 +290,7 @@ export function SettingsModal({
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                    <div className="brand-icon-wrapper" style={{ width: 28, height: 28, borderRadius: "var(--radius-sm)", backgroundColor: "var(--bg-input)", display: "flex", alignItems: "center", justifyCenter: "center" }}>
+                    <div className="brand-icon-wrapper" style={{ width: 28, height: 28, borderRadius: "var(--radius-sm)", backgroundColor: "var(--bg-input)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                       {renderSourceIcon(source.id, 16)}
                     </div>
                     <div>

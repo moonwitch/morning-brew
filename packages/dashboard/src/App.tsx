@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import type { MorningBrewTask, EnergyFeel } from "@morningbrew/core";
 import { TSHIRT_SIZE_MINUTES, applyTeamValueFilter, DEFAULT_TEAM_VALUE_FILTER } from "@morningbrew/core";
-import { ClipboardList, Calendar, Compass, Sun, Moon, Laptop, User, Sparkles } from "lucide-react";
+import { ClipboardList, Calendar, Compass, Sun, Moon, Settings, User, Sparkles } from "lucide-react";
 import brewieLogo from "./brewie_logo.jpg";
 import "./theme.css";
 
@@ -359,10 +359,8 @@ export function App() {
     setCaregivers((prev) => [...prev, name]);
   };
 
-  const cycleThemePref = () => {
-    if (themePref === "system") setThemePref("dark");
-    else if (themePref === "dark") setThemePref("light");
-    else setThemePref("system");
+  const toggleDayNightSlider = () => {
+    setThemePref((prev) => (prev === "dark" || (prev === "system" && resolvedTheme === "dark") ? "light" : "dark"));
   };
 
   return (
@@ -405,6 +403,7 @@ export function App() {
         </div>
 
         <div className="nav-actions">
+          {/* User Profile Button */}
           <button
             type="button"
             className="user-profile-btn"
@@ -416,28 +415,30 @@ export function App() {
             <span className="desktop-only">{userName ? userName.split(" ")[0] : "Sign In"}</span>
           </button>
 
-          {/* Theme Toggle Button (Default System) */}
+          {/* Night / Day Slider Switch in Navbar */}
+          <div
+            className={`theme-slider-switch ${resolvedTheme === "dark" ? "active-dark" : ""}`}
+            onClick={toggleDayNightSlider}
+            title={`Toggle Theme Mode (Current: ${resolvedTheme === "dark" ? "Coffee Dark" : "Warm Light"})`}
+          >
+            <Sun size={14} color="#d97706" />
+            <Moon size={14} color="#f5ebe0" />
+            <div className="theme-slider-thumb">
+              {resolvedTheme === "dark" ? <Moon size={12} color="#f5ebe0" /> : <Sun size={12} color="#140f0c" />}
+            </div>
+          </div>
+
+          {/* Settings Icon Button */}
           <button
             type="button"
-            className="theme-toggle-btn"
-            onClick={cycleThemePref}
-            title="Toggle Theme: System -> Coffee Dark -> Warm Light"
+            className="icon-btn"
+            onClick={() => setIsSettingsOpen(true)}
+            title="Open Settings & Preferences"
           >
-            {themePref === "system" ? (
-              <>
-                <Laptop size={15} color="var(--accent-amber)" /> <span className="desktop-only">System</span>
-              </>
-            ) : themePref === "dark" ? (
-              <>
-                <Moon size={15} color="var(--accent-amber)" /> <span className="desktop-only">Coffee Dark</span>
-              </>
-            ) : (
-              <>
-                <Sun size={15} color="var(--accent-amber)" /> <span className="desktop-only">Warm Light</span>
-              </>
-            )}
+            <Settings size={18} />
           </button>
 
+          {/* Quick Capture Button */}
           <button
             type="button"
             className="quick-capture-trigger"
@@ -597,6 +598,8 @@ export function App() {
         onToggleMoodReflection={() => setShowMoodReflection((v) => !v)}
         useCaseMode={useCaseMode}
         onSelectUseCaseMode={setUseCaseMode}
+        themePref={themePref}
+        onSelectThemePref={setThemePref}
         onOpenCaregivers={() => {
           setIsSettingsOpen(false);
           setIsCaregiversOpen(true);
