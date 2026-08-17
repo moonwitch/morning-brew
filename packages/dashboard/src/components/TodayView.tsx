@@ -1,6 +1,6 @@
 import React from "react";
 import type { MorningBrewTask } from "@morningbrew/core";
-import { Check, Flame, Coffee, Plus, Filter, Battery, Sparkles } from "lucide-react";
+import { Check, Flame, Coffee, Plus, Filter, Battery, Sparkles, Shirt } from "lucide-react";
 
 interface TodayViewProps {
   tasks: MorningBrewTask[];
@@ -52,7 +52,11 @@ export function TodayView({
               {t.priority === "should" && <span className="badge badge-should">Should</span>}
               {t.priority === "could" && <span className="badge badge-could">Could</span>}
 
-              {t.size && <span className="badge badge-size">{t.size}</span>}
+              {t.size && (
+                <span className="badge badge-size" style={{ display: "inline-flex", alignItems: "center", gap: "3px" }}>
+                  <Shirt size={12} /> {t.size}
+                </span>
+              )}
 
               <span className="badge badge-category">#{t.source}</span>
 

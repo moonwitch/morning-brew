@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import type { MorningBrewTask, EnergyFeel } from "@morningbrew/core";
+import type { MorningBrewTask, MoscowPriority, EnergyFeel } from "@morningbrew/core";
 import { TSHIRT_SIZE_MINUTES, applyTeamValueFilter, DEFAULT_TEAM_VALUE_FILTER } from "@morningbrew/core";
 import { ClipboardList, Calendar, Compass, Sun, Moon, Settings, User, Sparkles } from "lucide-react";
 import brewieLogo from "./brewie_logo.jpg";
@@ -171,7 +171,6 @@ export function App() {
   const [energyTaskTarget, setEnergyTaskTarget] = useState<MorningBrewTask | null>(null);
   const [isSetAsideOpen, setIsSetAsideOpen] = useState(false);
 
-  // System Theme Preference Resolution & Listener
   useEffect(() => {
     const updateTheme = () => {
       let active: "dark" | "light" = "dark";
@@ -355,6 +354,12 @@ export function App() {
     );
   };
 
+  const handleUpdateTaskPriority = (taskId: string, newPriority: MoscowPriority) => {
+    setTasks((prev) =>
+      prev.map((t) => (t.id === taskId ? { ...t, priority: newPriority } : t))
+    );
+  };
+
   const handleAddCaregiver = (name: string) => {
     setCaregivers((prev) => [...prev, name]);
   };
@@ -403,7 +408,6 @@ export function App() {
         </div>
 
         <div className="nav-actions">
-          {/* User Profile Button */}
           <button
             type="button"
             className="user-profile-btn"
@@ -415,7 +419,6 @@ export function App() {
             <span className="desktop-only">{userName ? userName.split(" ")[0] : "Sign In"}</span>
           </button>
 
-          {/* Night / Day Slider Switch in Navbar */}
           <div
             className={`theme-slider-switch ${resolvedTheme === "dark" ? "active-dark" : ""}`}
             onClick={toggleDayNightSlider}
@@ -428,7 +431,6 @@ export function App() {
             </div>
           </div>
 
-          {/* Dedicated Settings Icon Button */}
           <button
             type="button"
             className="icon-btn"
@@ -438,7 +440,6 @@ export function App() {
             <Settings size={18} />
           </button>
 
-          {/* Quick Capture Button */}
           <button
             type="button"
             className="quick-capture-trigger"
@@ -495,6 +496,7 @@ export function App() {
             tasks={includedTasks}
             onStartFocus={(task) => setFocusTask(task)}
             onOpenParkModal={(task) => setParkTaskTarget(task)}
+            onUpdatePriority={handleUpdateTaskPriority}
           />
         )}
       </main>
