@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import type { MorningBrewTask, EnergyFeel } from "@morningbrew/core";
 import { TSHIRT_SIZE_MINUTES, applyTeamValueFilter, DEFAULT_TEAM_VALUE_FILTER } from "@morningbrew/core";
-import { ClipboardList, Calendar, Compass, Sun, Moon, User, Sparkles } from "lucide-react";
+import { ClipboardList, Calendar, Compass, Sun, Moon, Laptop, User, Sparkles } from "lucide-react";
 import brewieLogo from "./brewie_logo.jpg";
 import "./theme.css";
 
@@ -21,6 +21,8 @@ import { CaregiverModal } from "./components/CaregiverModal.tsx";
 import { WeeklyReportModal } from "./components/WeeklyReportModal.tsx";
 import { PWAInstallPrompt } from "./components/PWAInstallPrompt.tsx";
 import type { ParsedShorthand } from "./utils/shorthandParser.ts";
+
+export type ThemePreference = "system" | "dark" | "light";
 
 const INITIAL_TASKS: MorningBrewTask[] = [
   {
@@ -145,7 +147,9 @@ function setStorageItem<T>(key: string, value: T): void {
 }
 
 export function App() {
-  const [theme, setTheme] = useState<"dark" | "light">(() => getStorageItem("mb_theme", "dark"));
+  const [themePref, setThemePref] = useState<ThemePreference>(() => getStorageItem("mb_theme_pref", "system"));
+  const [resolvedTheme, setResolvedTheme] = useState<"dark" | "light">("dark");
+
   const [activeTab, setActiveTab] = useState<"plan" | "calendar" | "compass">("plan");
   const [userName, setUserName] = useState<string | null>(() => getStorageItem("mb_username", "Kelly Crabbé"));
   const [useCaseMode, setUseCaseMode] = useState<UseCaseMode>(() => getStorageItem("mb_use_case_mode", "work_and_personal"));
@@ -167,10 +171,29 @@ export function App() {
   const [energyTaskTarget, setEnergyTaskTarget] = useState<MorningBrewTask | null>(null);
   const [isSetAsideOpen, setIsSetAsideOpen] = useState(false);
 
+  // System Theme Preference Resolution & Listener
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    setStorageItem("mb_theme", theme);
-  }, [theme]);
+    const updateTheme = () => {
+      let active: "dark" | "light" = "dark";
+      if (themePref === "system") {
+        const isSystemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        active = isSystemDark ? "dark" : "light";
+      } else {
+        active = themePref;
+      }
+      setResolvedTheme(active);
+      document.documentElement.setAttribute("data-theme", active);
+    };
+
+    updateTheme();
+    setStorageItem("mb_theme_pref", themePref);
+
+    if (themePref === "system" && window.matchMedia) {
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      mediaQuery.addEventListener("change", updateTheme);
+      return () => mediaQuery.removeEventListener("change", updateTheme);
+    }
+  }, [themePref]);
 
   useEffect(() => {
     setStorageItem("mb_tasks", tasks);
@@ -205,7 +228,6 @@ export function App() {
     return 300;
   }, [energyLevel]);
 
-  // Evaluate task partitioning with G-Factor filter & energy drain tracking
   const { includedTasks, setAsideItems, totalMinutesUsed } = useMemo(() => {
     if (useCaseMode === "personal_only") {
       let minutes = 0;
@@ -287,7 +309,6 @@ export function App() {
     if (!target) return;
 
     if (target.status !== "done") {
-      // Prompt user for completion energy feel feedback
       setEnergyTaskTarget(target);
       setTasks((prev) =>
         prev.map((t) =>
@@ -336,6 +357,12 @@ export function App() {
 
   const handleAddCaregiver = (name: string) => {
     setCaregivers((prev) => [...prev, name]);
+  };
+
+  const cycleThemePref = () => {
+    if (themePref === "system") setThemePref("dark");
+    else if (themePref === "dark") setThemePref("light");
+    else setThemePref("system");
   };
 
   return (
@@ -389,18 +416,24 @@ export function App() {
             <span className="desktop-only">{userName ? userName.split(" ")[0] : "Sign In"}</span>
           </button>
 
+          {/* Theme Toggle Button (Default System) */}
           <button
             type="button"
             className="theme-toggle-btn"
-            onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
+            onClick={cycleThemePref}
+            title="Toggle Theme: System -> Coffee Dark -> Warm Light"
           >
-            {theme === "dark" ? (
+            {themePref === "system" ? (
               <>
-                <Sun size={15} color="var(--accent-amber)" /> <span className="desktop-only">Warm Light</span>
+                <Laptop size={15} color="var(--accent-amber)" /> <span className="desktop-only">System</span>
+              </>
+            ) : themePref === "dark" ? (
+              <>
+                <Moon size={15} color="var(--accent-amber)" /> <span className="desktop-only">Coffee Dark</span>
               </>
             ) : (
               <>
-                <Moon size={15} color="var(--accent-amber)" /> <span className="desktop-only">Coffee Dark</span>
+                <Sun size={15} color="var(--accent-amber)" /> <span className="desktop-only">Warm Light</span>
               </>
             )}
           </button>

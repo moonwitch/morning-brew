@@ -27,9 +27,9 @@ export function MorningCheckIn({
         <div className="energy-info">
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "4px" }}>
             <Sparkles size={18} color="var(--accent-amber)" />
-            <h2>Guided Morning Brewing Ritual</h2>
+            <h2>Guided Morning Brewing Ritual ☕</h2>
           </div>
-          <p>Sunsama & Lunatask inspired 3-step daily check-in for neurodivergent focus.</p>
+          <p>Mindful 3-step daily check-in to calibrate focus and prevent executive overwhelm.</p>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
