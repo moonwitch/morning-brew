@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useMemo } from "react";
 import type { MorningBrewTask } from "@morningbrew/core";
 import { TSHIRT_SIZE_MINUTES, applyTeamValueFilter, DEFAULT_TEAM_VALUE_FILTER } from "@morningbrew/core";
-import { ClipboardList, Calendar, Sun, Moon, User, Sparkles } from "lucide-react";
+import { ClipboardList, Calendar, Grid, Sun, Moon, User, Sparkles } from "lucide-react";
 import brewieLogo from "./brewie_logo.jpg";
 import "./theme.css";
 
 import { MorningCheckIn, type EnergyLevel } from "./components/MorningCheckIn.tsx";
 import { TodayView } from "./components/TodayView.tsx";
 import { CalendarView, type CalendarMeeting } from "./components/CalendarView.tsx";
+import { EisenhowerView } from "./components/EisenhowerView.tsx";
 import { QuickCaptureModal } from "./components/QuickCaptureModal.tsx";
 import { FocusMode } from "./components/FocusMode.tsx";
 import { SetAsideDrawer, type SetAsideTaskItem } from "./components/SetAsideDrawer.tsx";
@@ -118,7 +119,6 @@ const INITIAL_SOURCES: IntegrationSource[] = [
   { id: "markdown", name: "Local Notes", type: "Markdown File", taskCount: 1, status: "connected" },
 ];
 
-// Helper to safely access localStorage for offline task persistence
 function getStorageItem<T>(key: string, fallback: T): T {
   try {
     const item = localStorage.getItem(key);
@@ -138,7 +138,7 @@ function setStorageItem<T>(key: string, value: T): void {
 
 export function App() {
   const [theme, setTheme] = useState<"dark" | "light">(() => getStorageItem("mb_theme", "dark"));
-  const [activeTab, setActiveTab] = useState<"plan" | "calendar">("plan");
+  const [activeTab, setActiveTab] = useState<"plan" | "calendar" | "matrix">("plan");
   const [userName, setUserName] = useState<string | null>(() => getStorageItem("mb_username", "Kelly Crabbé"));
   const [sources, setSources] = useState<IntegrationSource[]>(INITIAL_SOURCES);
   const [tasks, setTasks] = useState<MorningBrewTask[]>(() => getStorageItem("mb_tasks", INITIAL_TASKS));
@@ -152,7 +152,6 @@ export function App() {
   const [parkTaskTarget, setParkTaskTarget] = useState<MorningBrewTask | null>(null);
   const [isSetAsideOpen, setIsSetAsideOpen] = useState(false);
 
-  // Sync state changes to local storage for offline persistence
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     setStorageItem("mb_theme", theme);
@@ -174,7 +173,6 @@ export function App() {
     setStorageItem("mb_username", userName);
   }, [userName]);
 
-  // Global Cmd+K / Ctrl+K hotkey listener
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
@@ -297,7 +295,7 @@ export function App() {
           <div className="brand-title">MorningBrew</div>
         </div>
 
-        {/* Desktop Center Navigation Tabs */}
+        {/* Center Navigation Tabs */}
         <div className="nav-tabs desktop-only">
           <button
             type="button"
@@ -311,12 +309,18 @@ export function App() {
             className={`nav-tab-btn ${activeTab === "calendar" ? "active" : ""}`}
             onClick={() => setActiveTab("calendar")}
           >
-            <Calendar size={16} /> Calendar & Meetings
+            <Calendar size={16} /> Calendar Timebox
+          </button>
+          <button
+            type="button"
+            className={`nav-tab-btn ${activeTab === "matrix" ? "active" : ""}`}
+            onClick={() => setActiveTab("matrix")}
+          >
+            <Grid size={16} /> Eisenhower Matrix
           </button>
         </div>
 
         <div className="nav-actions">
-          {/* User Profile Button */}
           <button
             type="button"
             className="user-profile-btn"
@@ -328,7 +332,6 @@ export function App() {
             <span className="desktop-only">{userName ? userName.split(" ")[0] : "Sign In"}</span>
           </button>
 
-          {/* Theme Toggle Button */}
           <button
             type="button"
             className="theme-toggle-btn"
@@ -336,11 +339,11 @@ export function App() {
           >
             {theme === "dark" ? (
               <>
-                <Sun size={15} color="var(--accent-amber)" /> <span className="desktop-only">Light</span>
+                <Sun size={15} color="var(--accent-amber)" /> <span className="desktop-only">Warm Light</span>
               </>
             ) : (
               <>
-                <Moon size={15} color="var(--accent-amber)" /> <span className="desktop-only">Dark</span>
+                <Moon size={15} color="var(--accent-amber)" /> <span className="desktop-only">Coffee Dark</span>
               </>
             )}
           </button>
@@ -374,7 +377,7 @@ export function App() {
           showMoodReflection={showMoodReflection}
         />
 
-        {activeTab === "plan" ? (
+        {activeTab === "plan" && (
           <TodayView
             tasks={includedTasks}
             totalMinutesUsed={totalMinutesUsed}
@@ -386,7 +389,9 @@ export function App() {
             setAsideCount={setAsideItems.length}
             onOpenQuickCapture={() => setIsQuickCaptureOpen(true)}
           />
-        ) : (
+        )}
+
+        {activeTab === "calendar" && (
           <CalendarView
             meetings={INITIAL_MEETINGS}
             tasks={includedTasks}
@@ -394,10 +399,18 @@ export function App() {
           />
         )}
 
+        {activeTab === "matrix" && (
+          <EisenhowerView
+            tasks={includedTasks}
+            onStartFocus={(task) => setFocusTask(task)}
+            onOpenParkModal={(task) => setParkTaskTarget(task)}
+          />
+        )}
+
         <SourceManager sources={sources} onOpenSettings={() => setIsSettingsOpen(true)} />
       </main>
 
-      {/* Mobile Bottom Sticky Navigation Bar */}
+      {/* Mobile Navigation Bar */}
       <nav className="mobile-bottom-nav mobile-only">
         <button
           type="button"
@@ -419,6 +432,15 @@ export function App() {
 
         <button
           type="button"
+          className={`mobile-nav-btn ${activeTab === "matrix" ? "active" : ""}`}
+          onClick={() => setActiveTab("matrix")}
+        >
+          <Grid size={20} />
+          <span>Matrix</span>
+        </button>
+
+        <button
+          type="button"
           className="mobile-nav-btn capture-btn"
           onClick={() => setIsQuickCaptureOpen(true)}
         >
@@ -427,7 +449,7 @@ export function App() {
         </button>
       </nav>
 
-      {/* PWA Home Screen Install Prompt & Offline Banner */}
+      {/* PWA Prompt */}
       <PWAInstallPrompt />
 
       {/* Overlays */}
