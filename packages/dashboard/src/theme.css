@@ -504,9 +504,13 @@ input, textarea, select {
   flex: 1;
 }
 
+/* Checkbox Icon Always Round & Unsquished */
 .status-check {
   width: 24px;
   height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  flex-shrink: 0;
   border-radius: 50%;
   border: 2px solid var(--text-muted);
   display: flex;
@@ -815,45 +819,6 @@ input, textarea, select {
   align-items: center;
 }
 
-/* Compact Integrations Footer Bar */
-.compact-integrations-bar {
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 0.75rem 1.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  box-shadow: var(--shadow-subtle);
-}
-
-.integration-pills {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.integration-pill {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.3rem 0.75rem;
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: 20px;
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-.brand-icon-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* Mobile Navigation Bar */
 .mobile-bottom-nav {
   position: fixed;
@@ -895,6 +860,22 @@ input, textarea, select {
   max-width: 90px;
 }
 
+/* Responsive Navigation Breakpoints (<1024px) */
+@media (max-width: 1024px) {
+  .navbar {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .nav-tabs.desktop-only {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    margin-top: 0.25rem;
+  }
+}
+
 /* Mobile Breakpoints (<768px) */
 @media (max-width: 768px) {
   .desktop-only {
@@ -903,10 +884,6 @@ input, textarea, select {
 
   .mobile-only {
     display: flex !important;
-  }
-
-  .navbar {
-    padding: 0.75rem 1rem;
   }
 
   .main-content {
@@ -943,10 +920,5 @@ input, textarea, select {
     justify-content: flex-end;
     border-top: 1px dashed var(--border-subtle);
     padding-top: 0.5rem;
-  }
-
-  .compact-integrations-bar {
-    flex-direction: column;
-    align-items: stretch;
   }
 }

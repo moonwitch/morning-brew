@@ -14,7 +14,7 @@ import { FocusMode } from "./components/FocusMode.tsx";
 import { SetAsideDrawer, type SetAsideTaskItem } from "./components/SetAsideDrawer.tsx";
 import { ParkModal } from "./components/ParkModal.tsx";
 import { TaskCompletionEnergyModal } from "./components/TaskCompletionEnergyModal.tsx";
-import { SourceManager, type IntegrationSource } from "./components/SourceManager.tsx";
+import type { IntegrationSource } from "./components/SourceManager.tsx";
 import { LoginModal } from "./components/LoginModal.tsx";
 import { SettingsModal, type UseCaseMode } from "./components/SettingsModal.tsx";
 import { CaregiverModal } from "./components/CaregiverModal.tsx";
@@ -428,7 +428,7 @@ export function App() {
             </div>
           </div>
 
-          {/* Settings Icon Button */}
+          {/* Dedicated Settings Icon Button */}
           <button
             type="button"
             className="icon-btn"
@@ -497,8 +497,6 @@ export function App() {
             onOpenParkModal={(task) => setParkTaskTarget(task)}
           />
         )}
-
-        <SourceManager sources={sources} onOpenSettings={() => setIsSettingsOpen(true)} />
       </main>
 
       {/* Mobile Navigation Bar */}
