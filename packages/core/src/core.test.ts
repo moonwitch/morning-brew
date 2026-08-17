@@ -20,8 +20,6 @@ import {
   shouldResurface,
 } from "./task.ts";
 
-// A minimal stand-in for the real Monday plugin — its job here is to prove the
-// interface is actually implementable with concrete generics.
 interface MondayConfig {
   boardId: string;
 }
@@ -31,8 +29,6 @@ interface MondayItem {
 }
 
 function makeMondayPlugin(): MorningBrewSourcePlugin<MondayConfig, MondayItem> {
-  let boardId = "";
-
   return {
     id: "monday",
     name: "Monday.com",
@@ -46,9 +42,7 @@ function makeMondayPlugin(): MorningBrewSourcePlugin<MondayConfig, MondayItem> {
       incrementalSync: true,
     },
 
-    init(context: PluginContext<MondayConfig>) {
-      boardId = context.config.boardId;
-    },
+    init() {},
 
     async fetchTasks() {
       const item: MondayItem = { id: "1", name: "Ship the sync" };
@@ -56,14 +50,13 @@ function makeMondayPlugin(): MorningBrewSourcePlugin<MondayConfig, MondayItem> {
         tasks: [
           {
             id: buildTaskId("monday", item.id),
-            sourceId: "monday",
-            sourceTaskId: item.id,
+            source: "monday",
+            sourceId: item.id,
             title: item.name,
-            status: "backlog",
+            status: "todo",
             size: "M",
             priority: "should",
-            teamValue: { score: 4 },
-            raw: item,
+            teamValue: 4,
           },
         ],
         syncedAt: "2026-08-11T08:00:00.000Z",
@@ -82,10 +75,10 @@ function makeMondayPlugin(): MorningBrewSourcePlugin<MondayConfig, MondayItem> {
 function task(overrides: Partial<MorningBrewTask> = {}): MorningBrewTask {
   return {
     id: "test:1",
-    sourceId: "test",
-    sourceTaskId: "1",
+    source: "test",
+    sourceId: "1",
     title: "A task",
-    status: "backlog",
+    status: "todo",
     ...overrides,
   };
 }
@@ -107,7 +100,6 @@ describe("task model", () => {
   });
 
   test("source ids containing a separator still round-trip", () => {
-    // Splits on the first separator, so ids in the task portion survive.
     expect(parseTaskId("monday:board:1")).toEqual({
       sourceId: "monday",
       sourceTaskId: "board:1",
@@ -122,10 +114,11 @@ describe("task model", () => {
   test("parked tasks resurface on or after their date", () => {
     const parked = task({
       status: "parked",
-      parking: {
+      parked: {
         reason: "Waiting on design",
         parkedAt: "2026-08-01T09:00:00.000Z",
         resurfaceOn: "2026-08-11",
+        previousStatus: "todo",
       },
     });
     expect(shouldResurface(parked, "2026-08-10")).toBe(false);
@@ -136,25 +129,21 @@ describe("task model", () => {
   test("parked tasks with no resurface date never auto-return", () => {
     const parked = task({
       status: "parked",
-      parking: { reason: "Deferred", parkedAt: "2026-08-01T09:00:00.000Z" },
+      parked: { reason: "Deferred", parkedAt: "2026-08-01T09:00:00.000Z", previousStatus: "todo" },
     });
     expect(shouldResurface(parked, "2027-01-01")).toBe(false);
   });
 });
 
-describe("Garrett's Team Value filter", () => {
+describe("G-Factor filter", () => {
   test("gates on the minimum score", () => {
-    expect(passesTeamValueFilter(task({ teamValue: { score: 4 } })).passes).toBe(
-      true,
-    );
-    expect(passesTeamValueFilter(task({ teamValue: { score: 1 } })).passes).toBe(
-      false,
-    );
+    expect(passesTeamValueFilter(task({ teamValue: 4 })).passes).toBe(true);
+    expect(passesTeamValueFilter(task({ teamValue: 1 })).passes).toBe(false);
   });
 
   test("a must bypasses the score gate", () => {
     const verdict = passesTeamValueFilter(
-      task({ priority: "must", teamValue: { score: 0 } }),
+      task({ priority: "must", teamValue: 0 }),
     );
     expect(verdict.passes).toBe(true);
     expect(verdict.reason).toBe("included_priority_exempt");
@@ -180,8 +169,8 @@ describe("Garrett's Team Value filter", () => {
 
   test("partitions rather than discards, with an explanation", () => {
     const result = applyTeamValueFilter([
-      task({ id: "a", teamValue: { score: 5 } }),
-      task({ id: "b", teamValue: { score: 0 } }),
+      task({ id: "a", teamValue: 5 }),
+      task({ id: "b", teamValue: 0 }),
     ]);
     expect(result.included.map((t) => t.id)).toEqual(["a"]);
     expect(result.excluded).toHaveLength(1);
@@ -213,11 +202,11 @@ describe("plugin contract", () => {
     expect(registry.withCapability("writeParking")).toHaveLength(1);
 
     const { tasks } = await plugin.fetchTasks({});
-    expect(tasks[0]?.raw?.name).toBe("Ship the sync");
+    expect(tasks[0]?.title).toBe("Ship the sync");
 
     const result = await plugin.onStatusChange?.({
       task: tasks[0]!,
-      from: "backlog",
+      from: "todo",
       to: "in_progress",
       at: "2026-08-11T08:05:00.000Z",
     });

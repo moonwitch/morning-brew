@@ -1,21 +1,23 @@
 import React, { useState, useEffect, useMemo } from "react";
 import type { MorningBrewTask } from "@morningbrew/core";
 import { TSHIRT_SIZE_MINUTES, applyTeamValueFilter, DEFAULT_TEAM_VALUE_FILTER } from "@morningbrew/core";
-import { ClipboardList, Calendar, Grid, Sun, Moon, User, Sparkles } from "lucide-react";
+import { ClipboardList, Calendar, Compass, Sun, Moon, User, Sparkles } from "lucide-react";
 import brewieLogo from "./brewie_logo.jpg";
 import "./theme.css";
 
 import { MorningCheckIn, type EnergyLevel } from "./components/MorningCheckIn.tsx";
 import { TodayView } from "./components/TodayView.tsx";
 import { CalendarView, type CalendarMeeting } from "./components/CalendarView.tsx";
-import { EisenhowerView } from "./components/EisenhowerView.tsx";
+import { BrewingCompass } from "./components/BrewingCompass.tsx";
 import { QuickCaptureModal } from "./components/QuickCaptureModal.tsx";
 import { FocusMode } from "./components/FocusMode.tsx";
 import { SetAsideDrawer, type SetAsideTaskItem } from "./components/SetAsideDrawer.tsx";
 import { ParkModal } from "./components/ParkModal.tsx";
 import { SourceManager, type IntegrationSource } from "./components/SourceManager.tsx";
 import { LoginModal } from "./components/LoginModal.tsx";
-import { SettingsModal } from "./components/SettingsModal.tsx";
+import { SettingsModal, type UseCaseMode } from "./components/SettingsModal.tsx";
+import { CaregiverModal } from "./components/CaregiverModal.tsx";
+import { WeeklyReportModal } from "./components/WeeklyReportModal.tsx";
 import { PWAInstallPrompt } from "./components/PWAInstallPrompt.tsx";
 import type { ParsedShorthand } from "./utils/shorthandParser.ts";
 
@@ -29,6 +31,10 @@ const INITIAL_TASKS: MorningBrewTask[] = [
     size: "M",
     priority: "must",
     teamValue: 5,
+    subtasks: [
+      { id: "st-1", title: "Check backoff multiplier", completed: true },
+      { id: "st-2", title: "Verify token refresh retry", completed: false },
+    ],
   },
   {
     id: "freshservice:4092",
@@ -39,6 +45,7 @@ const INITIAL_TASKS: MorningBrewTask[] = [
     size: "M",
     priority: "must",
     teamValue: 5,
+    addedByCaregiver: "Sarah (Caregiver)",
   },
   {
     id: "google_tasks:201",
@@ -138,8 +145,11 @@ function setStorageItem<T>(key: string, value: T): void {
 
 export function App() {
   const [theme, setTheme] = useState<"dark" | "light">(() => getStorageItem("mb_theme", "dark"));
-  const [activeTab, setActiveTab] = useState<"plan" | "calendar" | "matrix">("plan");
+  const [activeTab, setActiveTab] = useState<"plan" | "calendar" | "compass">("plan");
   const [userName, setUserName] = useState<string | null>(() => getStorageItem("mb_username", "Kelly Crabbé"));
+  const [useCaseMode, setUseCaseMode] = useState<UseCaseMode>(() => getStorageItem("mb_use_case_mode", "work_and_personal"));
+  const [caregivers, setCaregivers] = useState<string[]>(() => getStorageItem("mb_caregivers", ["Sarah (Caregiver)"]));
+
   const [sources, setSources] = useState<IntegrationSource[]>(INITIAL_SOURCES);
   const [tasks, setTasks] = useState<MorningBrewTask[]>(() => getStorageItem("mb_tasks", INITIAL_TASKS));
   const [energyLevel, setEnergyLevel] = useState<EnergyLevel>(() => getStorageItem("mb_energy", "steady"));
@@ -148,6 +158,8 @@ export function App() {
   const [isQuickCaptureOpen, setIsQuickCaptureOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isCaregiversOpen, setIsCaregiversOpen] = useState(false);
+  const [isWeeklyReportOpen, setIsWeeklyReportOpen] = useState(false);
   const [focusTask, setFocusTask] = useState<MorningBrewTask | null>(null);
   const [parkTaskTarget, setParkTaskTarget] = useState<MorningBrewTask | null>(null);
   const [isSetAsideOpen, setIsSetAsideOpen] = useState(false);
@@ -166,12 +178,12 @@ export function App() {
   }, [energyLevel]);
 
   useEffect(() => {
-    setStorageItem("mb_mood_reflection", showMoodReflection);
-  }, [showMoodReflection]);
+    setStorageItem("mb_use_case_mode", useCaseMode);
+  }, [useCaseMode]);
 
   useEffect(() => {
-    setStorageItem("mb_username", userName);
-  }, [userName]);
+    setStorageItem("mb_caregivers", caregivers);
+  }, [caregivers]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -190,7 +202,36 @@ export function App() {
     return 300;
   }, [energyLevel]);
 
+  // Evaluate task partitioning with G-Factor filter when work_and_personal mode is enabled
   const { includedTasks, setAsideItems, totalMinutesUsed } = useMemo(() => {
+    if (useCaseMode === "personal_only") {
+      // Personal mode: No G-Factor organizational gating
+      let minutes = 0;
+      const finalIncluded: MorningBrewTask[] = [];
+      const finalSetAside: SetAsideTaskItem[] = [];
+
+      for (const t of tasks) {
+        if (t.status === "parked") continue;
+        const taskMins = TSHIRT_SIZE_MINUTES[t.size || "S"];
+        if (minutes + taskMins <= maxMinutesBudget || t.priority === "must") {
+          minutes += taskMins;
+          finalIncluded.push(t);
+        } else {
+          finalSetAside.push({
+            task: t,
+            explanation: `Set aside: Exceeds personal energy capacity budget of ${maxMinutesBudget}m`,
+          });
+        }
+      }
+
+      return {
+        includedTasks: finalIncluded,
+        setAsideItems: finalSetAside,
+        totalMinutesUsed: minutes,
+      };
+    }
+
+    // Work & Personal mode: Enable G-Factor gate
     const { included, excluded } = applyTeamValueFilter(tasks, {
       ...DEFAULT_TEAM_VALUE_FILTER,
       minScore: energyLevel === "gentle" ? 3 : 2,
@@ -223,7 +264,7 @@ export function App() {
       setAsideItems: finalSetAside,
       totalMinutesUsed: minutes,
     };
-  }, [tasks, energyLevel, maxMinutesBudget]);
+  }, [tasks, energyLevel, maxMinutesBudget, useCaseMode]);
 
   const handleQuickCaptureSubmit = (parsed: ParsedShorthand) => {
     const newTask: MorningBrewTask = {
@@ -271,14 +312,8 @@ export function App() {
     );
   };
 
-  const handleToggleSource = (sourceId: string) => {
-    setSources((prev) =>
-      prev.map((s) =>
-        s.id === sourceId
-          ? { ...s, status: s.status === "connected" ? "offline" : "connected" }
-          : s
-      )
-    );
+  const handleAddCaregiver = (name: string) => {
+    setCaregivers((prev) => [...prev, name]);
   };
 
   return (
@@ -313,10 +348,10 @@ export function App() {
           </button>
           <button
             type="button"
-            className={`nav-tab-btn ${activeTab === "matrix" ? "active" : ""}`}
-            onClick={() => setActiveTab("matrix")}
+            className={`nav-tab-btn ${activeTab === "compass" ? "active" : ""}`}
+            onClick={() => setActiveTab("compass")}
           >
-            <Grid size={16} /> Eisenhower Matrix
+            <Compass size={16} /> Brewing Compass
           </button>
         </div>
 
@@ -399,8 +434,8 @@ export function App() {
           />
         )}
 
-        {activeTab === "matrix" && (
-          <EisenhowerView
+        {activeTab === "compass" && (
+          <BrewingCompass
             tasks={includedTasks}
             onStartFocus={(task) => setFocusTask(task)}
             onOpenParkModal={(task) => setParkTaskTarget(task)}
@@ -432,11 +467,11 @@ export function App() {
 
         <button
           type="button"
-          className={`mobile-nav-btn ${activeTab === "matrix" ? "active" : ""}`}
-          onClick={() => setActiveTab("matrix")}
+          className={`mobile-nav-btn ${activeTab === "compass" ? "active" : ""}`}
+          onClick={() => setActiveTab("compass")}
         >
-          <Grid size={20} />
-          <span>Matrix</span>
+          <Compass size={20} />
+          <span>Compass</span>
         </button>
 
         <button
@@ -492,9 +527,36 @@ export function App() {
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         sources={sources}
-        onToggleSource={handleToggleSource}
+        onToggleSource={(id) => {
+          setSources((prev) =>
+            prev.map((s) => (s.id === id ? { ...s, status: s.status === "connected" ? "offline" : "connected" } : s))
+          );
+        }}
         showMoodReflection={showMoodReflection}
         onToggleMoodReflection={() => setShowMoodReflection((v) => !v)}
+        useCaseMode={useCaseMode}
+        onSelectUseCaseMode={setUseCaseMode}
+        onOpenCaregivers={() => {
+          setIsSettingsOpen(false);
+          setIsCaregiversOpen(true);
+        }}
+        onOpenWeeklyReport={() => {
+          setIsSettingsOpen(false);
+          setIsWeeklyReportOpen(true);
+        }}
+      />
+
+      <CaregiverModal
+        isOpen={isCaregiversOpen}
+        onClose={() => setIsCaregiversOpen(false)}
+        caregivers={caregivers}
+        onAddCaregiver={handleAddCaregiver}
+      />
+
+      <WeeklyReportModal
+        isOpen={isWeeklyReportOpen}
+        onClose={() => setIsWeeklyReportOpen(false)}
+        isWorkMode={useCaseMode === "work_and_personal"}
       />
     </div>
   );

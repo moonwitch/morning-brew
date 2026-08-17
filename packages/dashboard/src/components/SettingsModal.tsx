@@ -1,7 +1,9 @@
 import React from "react";
 import type { IntegrationSource } from "./SourceManager.tsx";
 import { renderSourceIcon } from "./SourceManager.tsx";
-import { Settings, X, Check, Plus } from "lucide-react";
+import { Settings, X, Check, Plus, Users, BarChart2, Briefcase, User } from "lucide-react";
+
+export type UseCaseMode = "work_and_personal" | "personal_only";
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -10,6 +12,10 @@ interface SettingsModalProps {
   onToggleSource: (sourceId: string) => void;
   showMoodReflection: boolean;
   onToggleMoodReflection: () => void;
+  useCaseMode: UseCaseMode;
+  onSelectUseCaseMode: (mode: UseCaseMode) => void;
+  onOpenCaregivers: () => void;
+  onOpenWeeklyReport: () => void;
 }
 
 export function SettingsModal({
@@ -19,6 +25,10 @@ export function SettingsModal({
   onToggleSource,
   showMoodReflection,
   onToggleMoodReflection,
+  useCaseMode,
+  onSelectUseCaseMode,
+  onOpenCaregivers,
+  onOpenWeeklyReport,
 }: SettingsModalProps) {
   if (!isOpen) return null;
 
@@ -27,7 +37,7 @@ export function SettingsModal({
       <div
         className="quick-capture-modal"
         onClick={(e) => e.stopPropagation()}
-        style={{ maxWidth: "580px" }}
+        style={{ maxWidth: "600px", maxHeight: "85vh", overflowY: "auto" }}
       >
         <div className="quick-capture-header">
           <h2 style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
@@ -38,7 +48,109 @@ export function SettingsModal({
           </button>
         </div>
 
-        {/* Dashboard Preferences Section */}
+        {/* Work vs Personal Mode Toggle */}
+        <div style={{ marginBottom: "1rem" }}>
+          <h3 style={{ fontSize: "1rem", marginBottom: "0.5rem" }}>App Usage Mode</h3>
+          <div
+            style={{
+              backgroundColor: "var(--bg-card)",
+              border: "1px solid var(--border-subtle)",
+              borderRadius: "var(--radius-md)",
+              padding: "1rem 1.25rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.75rem",
+            }}
+          >
+            <div>
+              <div style={{ fontWeight: 600 }}>Work & Personal vs Personal Only</div>
+              <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
+                Choose whether to enable organizational G-Factor scoring and team velocity reporting.
+              </div>
+            </div>
+
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <button
+                type="button"
+                className="action-btn"
+                style={{
+                  flex: 1,
+                  backgroundColor: useCaseMode === "work_and_personal" ? "var(--accent-amber)" : "var(--bg-input)",
+                  color: useCaseMode === "work_and_personal" ? "#140f0c" : "var(--text-secondary)",
+                  fontWeight: 700,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "0.4rem",
+                }}
+                onClick={() => onSelectUseCaseMode("work_and_personal")}
+              >
+                <Briefcase size={16} /> Work & Personal (G-Factor ⚡)
+              </button>
+
+              <button
+                type="button"
+                className="action-btn"
+                style={{
+                  flex: 1,
+                  backgroundColor: useCaseMode === "personal_only" ? "var(--accent-teal)" : "var(--bg-input)",
+                  color: useCaseMode === "personal_only" ? "#fff" : "var(--text-secondary)",
+                  fontWeight: 700,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "0.4rem",
+                }}
+                onClick={() => onSelectUseCaseMode("personal_only")}
+              >
+                <User size={16} /> Personal Only (No Org Metrics)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Co-Brewers & Weekly Velocity Shortcuts */}
+        <div style={{ marginBottom: "1rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+          <button
+            type="button"
+            className="action-btn"
+            style={{
+              backgroundColor: "var(--bg-card)",
+              border: "1px solid var(--border-strong)",
+              padding: "0.85rem",
+              borderRadius: "var(--radius-md)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.5rem",
+              fontWeight: 600,
+            }}
+            onClick={onOpenCaregivers}
+          >
+            <Users size={16} color="var(--accent-teal)" /> Co-Brewers & Caregivers 🤝
+          </button>
+
+          <button
+            type="button"
+            className="action-btn"
+            style={{
+              backgroundColor: "var(--bg-card)",
+              border: "1px solid var(--border-strong)",
+              padding: "0.85rem",
+              borderRadius: "var(--radius-md)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.5rem",
+              fontWeight: 600,
+            }}
+            onClick={onOpenWeeklyReport}
+          >
+            <BarChart2 size={16} color="var(--accent-amber)" /> Weekly Velocity Report 📊
+          </button>
+        </div>
+
+        {/* Dashboard Features Section */}
         <div style={{ marginBottom: "1rem" }}>
           <h3 style={{ fontSize: "1rem", marginBottom: "0.5rem" }}>Dashboard Features</h3>
           <div
@@ -80,7 +192,7 @@ export function SettingsModal({
         {/* Integration Sources Section */}
         <div>
           <h3 style={{ fontSize: "1rem", marginBottom: "0.5rem" }}>Task & Calendar Sources</h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", maxHeight: "300px", overflowY: "auto" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", maxHeight: "240px", overflowY: "auto" }}>
             {sources.map((source) => {
               const isEnabled = source.status === "connected";
               return (
@@ -97,7 +209,7 @@ export function SettingsModal({
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                    <div className="brand-icon-wrapper" style={{ width: 28, height: 28, borderRadius: "var(--radius-sm)", backgroundColor: "var(--bg-input)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <div className="brand-icon-wrapper" style={{ width: 28, height: 28, borderRadius: "var(--radius-sm)", backgroundColor: "var(--bg-input)", display: "flex", alignItems: "center", justifyCenter: "center" }}>
                       {renderSourceIcon(source.id, 16)}
                     </div>
                     <div>
