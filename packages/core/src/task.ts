@@ -4,6 +4,8 @@ export type TshirtSize = 'XS' | 'S' | 'M' | 'L' | 'XL';
 
 export type MoscowPriority = 'must' | 'should' | 'could' | 'wont';
 
+export type EnergyFeel = 'easy' | 'standard' | 'draining';
+
 export interface ParkedState {
   reason: string;
   resurfaceOn?: string; // YYYY-MM-DD
@@ -34,6 +36,10 @@ export interface MorningBrewTask {
   // Subtasks & Caregiver Co-Authoring
   subtasks?: SubTask[];
   addedByCaregiver?: string; // Name/Email of caregiver/co-author
+
+  // Energy Tracking on Completion
+  completionEnergyFeel?: EnergyFeel;
+  completedAt?: string;      // ISO timestamp
 }
 
 export function isActive(task: MorningBrewTask): boolean {

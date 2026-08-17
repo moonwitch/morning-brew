@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import type { MorningBrewTask } from "@morningbrew/core";
+import type { MorningBrewTask, EnergyFeel } from "@morningbrew/core";
 import { TSHIRT_SIZE_MINUTES, applyTeamValueFilter, DEFAULT_TEAM_VALUE_FILTER } from "@morningbrew/core";
 import { ClipboardList, Calendar, Compass, Sun, Moon, User, Sparkles } from "lucide-react";
 import brewieLogo from "./brewie_logo.jpg";
@@ -13,6 +13,7 @@ import { QuickCaptureModal } from "./components/QuickCaptureModal.tsx";
 import { FocusMode } from "./components/FocusMode.tsx";
 import { SetAsideDrawer, type SetAsideTaskItem } from "./components/SetAsideDrawer.tsx";
 import { ParkModal } from "./components/ParkModal.tsx";
+import { TaskCompletionEnergyModal } from "./components/TaskCompletionEnergyModal.tsx";
 import { SourceManager, type IntegrationSource } from "./components/SourceManager.tsx";
 import { LoginModal } from "./components/LoginModal.tsx";
 import { SettingsModal, type UseCaseMode } from "./components/SettingsModal.tsx";
@@ -160,8 +161,10 @@ export function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isCaregiversOpen, setIsCaregiversOpen] = useState(false);
   const [isWeeklyReportOpen, setIsWeeklyReportOpen] = useState(false);
+
   const [focusTask, setFocusTask] = useState<MorningBrewTask | null>(null);
   const [parkTaskTarget, setParkTaskTarget] = useState<MorningBrewTask | null>(null);
+  const [energyTaskTarget, setEnergyTaskTarget] = useState<MorningBrewTask | null>(null);
   const [isSetAsideOpen, setIsSetAsideOpen] = useState(false);
 
   useEffect(() => {
@@ -202,10 +205,9 @@ export function App() {
     return 300;
   }, [energyLevel]);
 
-  // Evaluate task partitioning with G-Factor filter when work_and_personal mode is enabled
+  // Evaluate task partitioning with G-Factor filter & energy drain tracking
   const { includedTasks, setAsideItems, totalMinutesUsed } = useMemo(() => {
     if (useCaseMode === "personal_only") {
-      // Personal mode: No G-Factor organizational gating
       let minutes = 0;
       const finalIncluded: MorningBrewTask[] = [];
       const finalSetAside: SetAsideTaskItem[] = [];
@@ -231,7 +233,6 @@ export function App() {
       };
     }
 
-    // Work & Personal mode: Enable G-Factor gate
     const { included, excluded } = applyTeamValueFilter(tasks, {
       ...DEFAULT_TEAM_VALUE_FILTER,
       minScore: energyLevel === "gentle" ? 3 : 2,
@@ -282,8 +283,29 @@ export function App() {
   };
 
   const handleStatusToggle = (taskId: string) => {
+    const target = tasks.find((t) => t.id === taskId);
+    if (!target) return;
+
+    if (target.status !== "done") {
+      // Prompt user for completion energy feel feedback
+      setEnergyTaskTarget(target);
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === taskId
+            ? { ...t, status: "done", completedAt: new Date().toISOString() }
+            : t
+        )
+      );
+    } else {
+      setTasks((prev) =>
+        prev.map((t) => (t.id === taskId ? { ...t, status: "todo" } : t))
+      );
+    }
+  };
+
+  const handleEnergyFeelSubmit = (taskId: string, feel: EnergyFeel) => {
     setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, status: t.status === "done" ? "todo" : "done" } : t))
+      prev.map((t) => (t.id === taskId ? { ...t, completionEnergyFeel: feel } : t))
     );
   };
 
@@ -508,6 +530,12 @@ export function App() {
         task={parkTaskTarget}
         onClose={() => setParkTaskTarget(null)}
         onParkSubmit={handleParkSubmit}
+      />
+
+      <TaskCompletionEnergyModal
+        task={energyTaskTarget}
+        onClose={() => setEnergyTaskTarget(null)}
+        onSubmitEnergyFeel={handleEnergyFeelSubmit}
       />
 
       <SetAsideDrawer
