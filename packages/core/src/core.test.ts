@@ -142,9 +142,7 @@ describe("G-Factor filter", () => {
   });
 
   test("a must bypasses the score gate", () => {
-    const verdict = passesTeamValueFilter(
-      task({ priority: "must", teamValue: 0 }),
-    );
+    const verdict = passesTeamValueFilter(task({ priority: "must", teamValue: 0 }));
     expect(verdict.passes).toBe(true);
     expect(verdict.reason).toBe("included_priority_exempt");
   });
@@ -160,9 +158,7 @@ describe("G-Factor filter", () => {
   });
 
   test("inactive tasks are excluded before any other check", () => {
-    const verdict = passesTeamValueFilter(
-      task({ status: "done", priority: "must" }),
-    );
+    const verdict = passesTeamValueFilter(task({ status: "done", priority: "must" }));
     expect(verdict.passes).toBe(false);
     expect(verdict.reason).toBe("excluded_inactive");
   });

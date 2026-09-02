@@ -1,4 +1,3 @@
-
 Default to using Bun instead of Node.js.
 
 - Use `bun <file>` instead of `node <file>` or `ts-node <file>`
@@ -8,6 +7,18 @@ Default to using Bun instead of Node.js.
 - Use `bun run <script>` instead of `npm run <script>` or `yarn run <script>` or `pnpm run <script>`
 - Use `bunx <package> <command>` instead of `npx <package> <command>`
 - Bun automatically loads .env, so don't use dotenv.
+
+## Available CLI Commands
+
+| Command | Target | Description |
+| :--- | :--- | :--- |
+| `bun dev` | `bun --hot packages/dashboard/src/server.ts` | Starts the dashboard dev server with hot reload on http://localhost:3000 |
+| `bun start` | `bun packages/dashboard/src/server.ts` | Runs the production dashboard server on http://localhost:3000 |
+| `bun test` | `bun test` | Runs all unit tests across `@morningbrew/core` and `@morningbrew/dashboard` |
+| `bun run typecheck` | `tsc --noEmit` | Runs workspace TypeScript static type checks |
+| `bun run lint` | `biome check .` | Runs Biome code formatting and lint checks |
+| `bun run lint:fix` | `biome check --write .` | Auto-formats and fixes lint issues with Biome |
+| `bun run build` | `bun build ...` | Compiles dashboard frontend app into bundle assets |
 
 ## APIs
 
@@ -49,18 +60,6 @@ Bun.serve({
       },
     },
   },
-  // optional websocket support
-  websocket: {
-    open: (ws) => {
-      ws.send("Hello, world!");
-    },
-    message: (ws, message) => {
-      ws.send(message);
-    },
-    close: (ws) => {
-      // handle close
-    }
-  },
   development: {
     hmr: true,
     console: true,
@@ -79,32 +78,6 @@ HTML files can import .tsx, .jsx or .js files directly and Bun's bundler will tr
 </html>
 ```
 
-With the following `frontend.tsx`:
-
-```tsx#frontend.tsx
-import React from "react";
-import { createRoot } from "react-dom/client";
-
-// import .css files directly and it works
-import './index.css';
-
-const root = createRoot(document.body);
-
-export default function Frontend() {
-  return <h1>Hello, world!</h1>;
-}
-
-root.render(<Frontend />);
-```
-
-Then, run index.ts
-
-```sh
-bun --hot ./index.ts
-```
-
-For more information, read the Bun API docs in `node_modules/bun-types/docs/**.mdx`.
-
 ---
 
 ## MorningBrew project conventions
@@ -119,4 +92,3 @@ For more information, read the Bun API docs in `node_modules/bun-types/docs/**.m
 - Task content is private. Don't log task titles or notes; don't commit anything
   under `.morningbrew/`, `data/`, or `.env`.
 - Official app mascot is **Brewie** ☕✨. Keep branding warm, cozy, and anti-overwhelm.
-

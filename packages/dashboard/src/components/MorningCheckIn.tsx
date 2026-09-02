@@ -1,5 +1,5 @@
+import { ArrowRight, CheckCircle, Flame, Moon, Sparkles, Sun } from "lucide-react";
 import React, { useState } from "react";
-import { Sparkles, Moon, Sun, Flame, CheckCircle, ArrowRight } from "lucide-react";
 
 export type EnergyLevel = "gentle" | "steady" | "full";
 
@@ -25,7 +25,9 @@ export function MorningCheckIn({
       {/* Guided Brewing Ritual Banner */}
       <div className="energy-banner">
         <div className="energy-info">
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "4px" }}>
+          <div
+            style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "4px" }}
+          >
             <Sparkles size={18} color="var(--accent-amber)" />
             <h2>Guided Morning Brewing Ritual ☕</h2>
           </div>
@@ -63,7 +65,14 @@ export function MorningCheckIn({
           <button
             type="button"
             className="action-btn"
-            style={{ backgroundColor: "var(--accent-amber)", color: "#140f0c", fontWeight: 700, display: "flex", alignItems: "center", gap: "0.4rem" }}
+            style={{
+              backgroundColor: "var(--accent-amber)",
+              color: "#140f0c",
+              fontWeight: 700,
+              display: "flex",
+              alignItems: "center",
+              gap: "0.4rem",
+            }}
             onClick={() => setIsRitualActive(true)}
           >
             Start Ritual <ArrowRight size={14} />
@@ -86,15 +95,29 @@ export function MorningCheckIn({
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span className="badge badge-should">Step {ritualStep} of 3: {ritualStep === 1 ? "Reflect on Yesterday" : ritualStep === 2 ? "Calibrate Energy & Capacity" : "Finalize Today's Focus"}</span>
-            <button type="button" className="action-btn" onClick={() => setIsRitualActive(false)}>✕ Close</button>
+            <span className="badge badge-should">
+              Step {ritualStep} of 3:{" "}
+              {ritualStep === 1
+                ? "Reflect on Yesterday"
+                : ritualStep === 2
+                  ? "Calibrate Energy & Capacity"
+                  : "Finalize Today's Focus"}
+            </span>
+            <button type="button" className="action-btn" onClick={() => setIsRitualActive(false)}>
+              ✕ Close
+            </button>
           </div>
 
           {ritualStep === 1 && (
             <div>
-              <h3 style={{ fontSize: "1.2rem", marginBottom: "0.5rem" }}>Step 1: Review Yesterday & Clear Working Memory</h3>
-              <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", marginBottom: "1rem" }}>
-                Unfinished tasks from yesterday have been automatically reviewed. Park items you won't touch today so they leave working memory.
+              <h3 style={{ fontSize: "1.2rem", marginBottom: "0.5rem" }}>
+                Step 1: Review Yesterday & Clear Working Memory
+              </h3>
+              <p
+                style={{ fontSize: "0.9rem", color: "var(--text-secondary)", marginBottom: "1rem" }}
+              >
+                Unfinished tasks from yesterday have been automatically reviewed. Park items you
+                won't touch today so they leave working memory.
               </p>
               <button
                 type="button"
@@ -109,19 +132,47 @@ export function MorningCheckIn({
 
           {ritualStep === 2 && (
             <div>
-              <h3 style={{ fontSize: "1.2rem", marginBottom: "0.5rem" }}>Step 2: Choose Today's Cognitive Energy Budget</h3>
-              <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", marginBottom: "1rem" }}>
-                Select how much mental energy you have today. MorningBrew will cap task capacity so you don't over-commit.
+              <h3 style={{ fontSize: "1.2rem", marginBottom: "0.5rem" }}>
+                Step 2: Choose Today's Cognitive Energy Budget
+              </h3>
+              <p
+                style={{ fontSize: "0.9rem", color: "var(--text-secondary)", marginBottom: "1rem" }}
+              >
+                Select how much mental energy you have today. MorningBrew will cap task capacity so
+                you don't over-commit.
               </p>
               <div style={{ display: "flex", gap: "0.75rem" }}>
-                <button type="button" className={`action-btn ${currentLevel === "gentle" ? "active-gentle" : ""}`} onClick={() => onSelectLevel("gentle")}>🌿 Gentle (~90m)</button>
-                <button type="button" className={`action-btn ${currentLevel === "steady" ? "active-steady" : ""}`} onClick={() => onSelectLevel("steady")}>⚡ Steady (~180m)</button>
-                <button type="button" className={`action-btn ${currentLevel === "full" ? "active-full" : ""}`} onClick={() => onSelectLevel("full")}>🚀 Full Power (~300m)</button>
+                <button
+                  type="button"
+                  className={`action-btn ${currentLevel === "gentle" ? "active-gentle" : ""}`}
+                  onClick={() => onSelectLevel("gentle")}
+                >
+                  🌿 Gentle (~90m)
+                </button>
+                <button
+                  type="button"
+                  className={`action-btn ${currentLevel === "steady" ? "active-steady" : ""}`}
+                  onClick={() => onSelectLevel("steady")}
+                >
+                  ⚡ Steady (~180m)
+                </button>
+                <button
+                  type="button"
+                  className={`action-btn ${currentLevel === "full" ? "active-full" : ""}`}
+                  onClick={() => onSelectLevel("full")}
+                >
+                  🚀 Full Power (~300m)
+                </button>
               </div>
               <button
                 type="button"
                 className="action-btn"
-                style={{ backgroundColor: "var(--accent-teal)", color: "#fff", fontWeight: 600, marginTop: "1rem" }}
+                style={{
+                  backgroundColor: "var(--accent-teal)",
+                  color: "#fff",
+                  fontWeight: 600,
+                  marginTop: "1rem",
+                }}
                 onClick={() => setRitualStep(3)}
               >
                 Next: Finalize Today's Focus →
@@ -132,13 +183,20 @@ export function MorningCheckIn({
           {ritualStep === 3 && (
             <div>
               <h3 style={{ fontSize: "1.2rem", marginBottom: "0.5rem" }}>Step 3: Ready to Brew!</h3>
-              <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", marginBottom: "1rem" }}>
-                Your day plan is calibrated. Excess tasks are safely stored in the Set-Aside Drawer with clear filter explanations.
+              <p
+                style={{ fontSize: "0.9rem", color: "var(--text-secondary)", marginBottom: "1rem" }}
+              >
+                Your day plan is calibrated. Excess tasks are safely stored in the Set-Aside Drawer
+                with clear filter explanations.
               </p>
               <button
                 type="button"
                 className="action-btn"
-                style={{ backgroundColor: "var(--accent-amber)", color: "#140f0c", fontWeight: 700 }}
+                style={{
+                  backgroundColor: "var(--accent-amber)",
+                  color: "#140f0c",
+                  fontWeight: 700,
+                }}
                 onClick={() => setIsRitualActive(false)}
               >
                 ✓ Complete Ritual & Start Work
@@ -163,12 +221,21 @@ export function MorningCheckIn({
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <h3 style={{ fontSize: "1rem", fontWeight: 600 }}>💭 Optional Morning Mood Reflection</h3>
-            <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>Can be disabled in Settings ⚙️</span>
+            <h3 style={{ fontSize: "1rem", fontWeight: 600 }}>
+              💭 Optional Morning Mood Reflection
+            </h3>
+            <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
+              Can be disabled in Settings ⚙️
+            </span>
           </div>
           <textarea
             className="quick-input"
-            style={{ fontSize: "0.95rem", padding: "0.75rem", borderRadius: "var(--radius-md)", minHeight: "64px" }}
+            style={{
+              fontSize: "0.95rem",
+              padding: "0.75rem",
+              borderRadius: "var(--radius-md)",
+              minHeight: "64px",
+            }}
             placeholder="How are you feeling this morning? What's on your mind? (Optional private note)"
             value={moodText}
             onChange={(e) => setMoodText(e.target.value)}

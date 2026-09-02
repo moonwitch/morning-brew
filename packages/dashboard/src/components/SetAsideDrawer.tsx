@@ -1,6 +1,6 @@
-import React from "react";
 import type { MorningBrewTask } from "@morningbrew/core";
-import { Filter, X, ArrowUpRight, Zap } from "lucide-react";
+import { ArrowUpRight, Filter, X, Zap } from "lucide-react";
+import React from "react";
 
 export interface SetAsideTaskItem {
   task: MorningBrewTask;
@@ -14,12 +14,7 @@ interface SetAsideDrawerProps {
   onPullIntoToday: (taskId: string) => void;
 }
 
-export function SetAsideDrawer({
-  isOpen,
-  onClose,
-  items,
-  onPullIntoToday,
-}: SetAsideDrawerProps) {
+export function SetAsideDrawer({ isOpen, onClose, items, onPullIntoToday }: SetAsideDrawerProps) {
   if (!isOpen) return null;
 
   return (
@@ -35,10 +30,19 @@ export function SetAsideDrawer({
         </div>
 
         <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>
-          Tasks safely set aside by the G-Factor ⚡ filter and today's energy budget limit. None of these tasks are lost or deleted.
+          Tasks safely set aside by the G-Factor ⚡ filter and today's energy budget limit. None of
+          these tasks are lost or deleted.
         </p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem", flex: 1, overflowY: "auto" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+            flex: 1,
+            overflowY: "auto",
+          }}
+        >
           {items.length === 0 ? (
             <div style={{ textAlign: "center", padding: "3rem 1rem", color: "var(--text-muted)" }}>
               No tasks set aside today! All active tasks fit into today's focus plan. ✨
@@ -57,10 +61,18 @@ export function SetAsideDrawer({
                   gap: "0.5rem",
                 }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                  }}
+                >
                   <div>
                     <h4 style={{ fontSize: "0.95rem", fontWeight: 600 }}>{task.title}</h4>
-                    <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "2px" }}>
+                    <div
+                      style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "2px" }}
+                    >
                       Source: {task.source} • Size: {task.size || "S"}
                     </div>
                   </div>

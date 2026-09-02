@@ -2,13 +2,15 @@
   "name": "morning-brew",
   "private": true,
   "type": "module",
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": ["packages/*"],
   "scripts": {
-    "typecheck": "tsc --noEmit",
+    "dev": "bun --hot packages/dashboard/src/server.ts",
+    "start": "bun packages/dashboard/src/server.ts",
     "test": "bun test",
-    "lint": "biome check ."
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "build": "bun build ./packages/dashboard/src/frontend.tsx --outdir ./packages/dashboard/dist"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

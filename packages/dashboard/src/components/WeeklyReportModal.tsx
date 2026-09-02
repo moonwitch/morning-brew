@@ -1,5 +1,5 @@
+import { Award, BarChart2, CheckCircle2, Flame, X } from "lucide-react";
 import React from "react";
-import { BarChart2, CheckCircle2, Flame, Award, X } from "lucide-react";
 
 interface WeeklyReportModalProps {
   isOpen: boolean;
@@ -19,7 +19,8 @@ export function WeeklyReportModal({ isOpen, onClose, isWorkMode }: WeeklyReportM
       >
         <div className="quick-capture-header">
           <h2 style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <BarChart2 size={20} color="var(--accent-amber)" /> Weekly Work Velocity & Energy Report 📊
+            <BarChart2 size={20} color="var(--accent-amber)" /> Weekly Work Velocity & Energy Report
+            📊
           </h2>
           <button type="button" className="action-btn" onClick={onClose}>
             <X size={16} />
@@ -31,7 +32,14 @@ export function WeeklyReportModal({ isOpen, onClose, isWorkMode }: WeeklyReportM
         </p>
 
         {/* Weekly Stats Grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", margin: "0.5rem 0" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "1rem",
+            margin: "0.5rem 0",
+          }}
+        >
           <div
             style={{
               backgroundColor: "var(--bg-card)",
@@ -41,9 +49,15 @@ export function WeeklyReportModal({ isOpen, onClose, isWorkMode }: WeeklyReportM
               textAlign: "center",
             }}
           >
-            <div style={{ fontSize: "2rem", fontWeight: 700, color: "var(--accent-teal)" }}>88%</div>
-            <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>Task Completion Rate</div>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "2px" }}>14 of 16 planned tasks done</div>
+            <div style={{ fontSize: "2rem", fontWeight: 700, color: "var(--accent-teal)" }}>
+              88%
+            </div>
+            <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
+              Task Completion Rate
+            </div>
+            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "2px" }}>
+              14 of 16 planned tasks done
+            </div>
           </div>
 
           <div
@@ -55,9 +69,15 @@ export function WeeklyReportModal({ isOpen, onClose, isWorkMode }: WeeklyReportM
               textAlign: "center",
             }}
           >
-            <div style={{ fontSize: "2rem", fontWeight: 700, color: "var(--accent-amber)" }}>18.5 hrs</div>
-            <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>Focused Work Delivered</div>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "2px" }}>Within daily capacity limits</div>
+            <div style={{ fontSize: "2rem", fontWeight: 700, color: "var(--accent-amber)" }}>
+              18.5 hrs
+            </div>
+            <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
+              Focused Work Delivered
+            </div>
+            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "2px" }}>
+              Within daily capacity limits
+            </div>
           </div>
         </div>
 
@@ -76,9 +96,12 @@ export function WeeklyReportModal({ isOpen, onClose, isWorkMode }: WeeklyReportM
           >
             <Award size={32} color="var(--accent-purple)" />
             <div>
-              <div style={{ fontWeight: 600, fontSize: "0.95rem" }}>High G-Factor Team Impact ⚡</div>
+              <div style={{ fontWeight: 600, fontSize: "0.95rem" }}>
+                High G-Factor Team Impact ⚡
+              </div>
               <div style={{ fontSize: "0.82rem", color: "var(--text-secondary)" }}>
-                85% of completed tasks had a G-Factor score of 4 or 5, directly helping teammates and stakeholders.
+                85% of completed tasks had a G-Factor score of 4 or 5, directly helping teammates
+                and stakeholders.
               </div>
             </div>
           </div>

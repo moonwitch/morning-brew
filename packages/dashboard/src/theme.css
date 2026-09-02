@@ -1,30 +1,31 @@
 /* MorningBrew Anti-Overwhelm Design System - Tranquil Coffee Dark & Warm Light Themes */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 
-:root, [data-theme="dark"] {
+:root,
+[data-theme="dark"] {
   /* Tranquil Coffee Dark Theme Palette */
-  --bg-app: #140f0c;           /* Deep roasted espresso dark background */
-  --bg-surface: #1c1511;       /* Dark mahogany coffee surface */
-  --bg-card: #261e18;           /* Warm roasted coffee card */
+  --bg-app: #140f0c; /* Deep roasted espresso dark background */
+  --bg-surface: #1c1511; /* Dark mahogany coffee surface */
+  --bg-card: #261e18; /* Warm roasted coffee card */
   --bg-card-hover: #31271f;
   --bg-input: #120e0b;
 
   --border-subtle: rgba(226, 149, 120, 0.12);
   --border-strong: rgba(226, 149, 120, 0.25);
 
-  --text-primary: #f5ebe0;      /* Warm creamy foam text */
-  --text-secondary: #bcaaa4;    /* Warm mocha secondary text */
+  --text-primary: #f5ebe0; /* Warm creamy foam text */
+  --text-secondary: #bcaaa4; /* Warm mocha secondary text */
   --text-muted: #8d7b68;
 
-  --accent-amber: #e29578;      /* Warm caramel roast accent */
+  --accent-amber: #e29578; /* Warm caramel roast accent */
   --accent-amber-light: rgba(226, 149, 120, 0.15);
-  --accent-teal: #6b9080;       /* Tranquil sage teal */
+  --accent-teal: #6b9080; /* Tranquil sage teal */
   --accent-teal-light: rgba(107, 144, 128, 0.15);
-  --accent-purple: #b5838d;     /* Warm mauve purple */
+  --accent-purple: #b5838d; /* Warm mauve purple */
   --accent-purple-light: rgba(181, 131, 141, 0.15);
-  --accent-blue: #709775;       /* Earthy calm sage blue */
+  --accent-blue: #709775; /* Earthy calm sage blue */
   --accent-blue-light: rgba(112, 151, 117, 0.15);
-  --accent-red: #e07a5f;        /* Soft terracotta red */
+  --accent-red: #e07a5f; /* Soft terracotta red */
   --accent-red-light: rgba(224, 122, 95, 0.15);
 
   --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.4);
@@ -33,20 +34,20 @@
 
 [data-theme="light"] {
   /* Cozy Warm Light Theme Palette */
-  --bg-app: #faf6f0;           /* Soft warm cream / oatmeal */
+  --bg-app: #faf6f0; /* Soft warm cream / oatmeal */
   --bg-surface: #ffffff;
-  --bg-card: #f3ebe1;           /* Warm cozy sand card */
+  --bg-card: #f3ebe1; /* Warm cozy sand card */
   --bg-card-hover: #e8dccf;
   --bg-input: #ffffff;
 
   --border-subtle: rgba(140, 100, 60, 0.15);
   --border-strong: rgba(140, 100, 60, 0.3);
 
-  --text-primary: #2d2218;      /* Deep warm roasted coffee slate */
-  --text-secondary: #6e5d4f;    /* Warm medium brown slate */
+  --text-primary: #2d2218; /* Deep warm roasted coffee slate */
+  --text-secondary: #6e5d4f; /* Warm medium brown slate */
   --text-muted: #9c8a7b;
 
-  --accent-amber: #d97706;      /* Rich warm honey amber */
+  --accent-amber: #d97706; /* Rich warm honey amber */
   --accent-amber-light: rgba(217, 119, 6, 0.14);
   --accent-teal: #0d9488;
   --accent-teal-light: rgba(13, 148, 136, 0.14);
@@ -62,9 +63,9 @@
 }
 
 :root {
-  --font-heading: 'Outfit', sans-serif;
-  --font-body: 'Plus Jakarta Sans', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-heading: "Outfit", sans-serif;
+  --font-body: "Plus Jakarta Sans", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -93,7 +94,12 @@ body {
   touch-action: manipulation;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -109,7 +115,9 @@ button {
   min-height: 44px; /* Touch-friendly tap target */
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
   font-family: var(--font-body);
   color: inherit;
 }
@@ -674,11 +682,25 @@ input, textarea, select {
   font-family: var(--font-mono);
 }
 
-.token-category { background: var(--accent-purple-light); color: var(--accent-purple); }
-.token-date { background: var(--accent-blue-light); color: var(--accent-blue); }
-.token-urgency { background: var(--accent-amber-light); color: var(--accent-amber); }
-.token-duration { background: var(--accent-teal-light); color: var(--accent-teal); }
-.token-text { color: var(--text-primary); }
+.token-category {
+  background: var(--accent-purple-light);
+  color: var(--accent-purple);
+}
+.token-date {
+  background: var(--accent-blue-light);
+  color: var(--accent-blue);
+}
+.token-urgency {
+  background: var(--accent-amber-light);
+  color: var(--accent-amber);
+}
+.token-duration {
+  background: var(--accent-teal-light);
+  color: var(--accent-teal);
+}
+.token-text {
+  color: var(--text-primary);
+}
 
 /* Focus Mode Fullscreen Overlay */
 .focus-overlay {

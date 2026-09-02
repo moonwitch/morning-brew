@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { parseShorthand, type ParsedShorthand } from "../utils/shorthandParser.ts";
+import type React from "react";
+import { useEffect, useState } from "react";
+import { type ParsedShorthand, parseShorthand } from "../utils/shorthandParser.ts";
 
 interface QuickCaptureModalProps {
   isOpen: boolean;
@@ -35,7 +36,10 @@ export function QuickCaptureModal({ isOpen, onClose, onSubmit }: QuickCaptureMod
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <form
+          onSubmit={handleSubmit}
+          style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+        >
           <div className="input-container">
             <input
               type="text"
@@ -43,7 +47,6 @@ export function QuickCaptureModal({ isOpen, onClose, onSubmit }: QuickCaptureMod
               placeholder="e.g. #work Ensure ticket x is handled @tomorrow !!! ~40min"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              autoFocus
             />
           </div>
 
@@ -64,7 +67,11 @@ export function QuickCaptureModal({ isOpen, onClose, onSubmit }: QuickCaptureMod
               <span style={{ color: "var(--accent-amber)" }}>!/!!/!!!/!!!!</span>{" "}
               <span style={{ color: "var(--accent-teal)" }}>~40min</span>
             </div>
-            <button type="submit" className="action-btn" style={{ backgroundColor: "var(--accent-amber)", color: "#000", fontWeight: 600 }}>
+            <button
+              type="submit"
+              className="action-btn"
+              style={{ backgroundColor: "var(--accent-amber)", color: "#000", fontWeight: 600 }}
+            >
               Add Task (Enter)
             </button>
           </div>

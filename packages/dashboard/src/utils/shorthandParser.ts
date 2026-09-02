@@ -1,4 +1,4 @@
-import type { MoscowPriority, TShirtSize } from "@morningbrew/core";
+import type { MoscowPriority, TshirtSize } from "@morningbrew/core";
 
 export interface ParsedShorthandToken {
   type: "text" | "category" | "date" | "urgency" | "duration";
@@ -13,13 +13,13 @@ export interface ParsedShorthand {
   resurfaceOn?: string;
   priority: MoscowPriority;
   durationMinutes: number;
-  tshirtSize: TShirtSize;
+  tshirtSize: TshirtSize;
   tokens: ParsedShorthandToken[];
 }
 
 export function parseShorthand(input: string, now: Date = new Date()): ParsedShorthand {
   const raw = input;
-  let text = input;
+  const text = input;
 
   let category: string | undefined;
   let resurfaceOn: string | undefined;
@@ -28,20 +28,20 @@ export function parseShorthand(input: string, now: Date = new Date()): ParsedSho
 
   // 1. Extract category (#work, #personal)
   const categoryMatch = text.match(/#([a-zA-Z0-9_\-]+)/);
-  if (categoryMatch) {
+  if (categoryMatch?.[1]) {
     category = categoryMatch[1];
   }
 
   // 2. Extract date (@tomorrow, @today, @2026-08-15, @next-week)
   const dateMatch = text.match(/@([a-zA-Z0-9_\-]+)/);
-  if (dateMatch) {
+  if (dateMatch?.[1]) {
     const rawDate = dateMatch[1].toLowerCase();
     resurfaceOn = resolveDateKeyword(rawDate, now);
   }
 
   // 3. Extract urgency (! to !!!!)
   const urgencyMatch = text.match(/(^|\s)(!{1,4})(\s|$)/);
-  if (urgencyMatch) {
+  if (urgencyMatch?.[2]) {
     const exclamation = urgencyMatch[2];
     if (exclamation === "!") priority = "wont";
     else if (exclamation === "!!") priority = "could";
@@ -51,8 +51,8 @@ export function parseShorthand(input: string, now: Date = new Date()): ParsedSho
 
   // 4. Extract duration (~40min, ~15m, ~1.5h)
   const durationMatch = text.match(/~([\d\.]+)(min|m|h|hour|hours)?/i);
-  if (durationMatch) {
-    const num = parseFloat(durationMatch[1]);
+  if (durationMatch?.[1]) {
+    const num = Number.parseFloat(durationMatch[1]);
     const unit = (durationMatch[2] || "m").toLowerCase();
     if (unit.startsWith("h")) {
       durationMinutes = Math.round(num * 60);
@@ -120,7 +120,7 @@ function formatDate(date: Date): string {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-export function minutesToTShirtSize(minutes: number): TShirtSize {
+export function minutesToTShirtSize(minutes: number): TshirtSize {
   if (minutes <= 20) return "XS";
   if (minutes <= 45) return "S";
   if (minutes <= 90) return "M";

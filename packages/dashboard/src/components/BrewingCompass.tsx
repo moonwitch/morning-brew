@@ -1,6 +1,7 @@
-import React, { useState } from "react";
 import type { MorningBrewTask, MoscowPriority } from "@morningbrew/core";
-import { Flame, Compass, Coffee, Sparkles, Shirt } from "lucide-react";
+import { Coffee, Compass, Flame, Shirt, Sparkles } from "lucide-react";
+import type React from "react";
+import { useState } from "react";
 
 interface BrewingCompassProps {
   tasks: MorningBrewTask[];
@@ -62,7 +63,7 @@ export function BrewingCompass({
     priority: MoscowPriority,
     quadrantTasks: MorningBrewTask[],
     icon: React.ReactNode,
-    borderColor: string
+    borderColor: string,
   ) => {
     const isTarget = activeDropTarget === priority;
 
@@ -73,7 +74,7 @@ export function BrewingCompass({
         onDrop={(e) => handleDrop(e, priority)}
         style={{
           backgroundColor: isTarget ? "var(--bg-card-hover)" : "var(--bg-surface)",
-          border: isTarget ? `2px dashed ${borderColor}` : `1px solid var(--border-subtle)`,
+          border: isTarget ? `2px dashed ${borderColor}` : "1px solid var(--border-subtle)",
           borderTop: `4px solid ${borderColor}`,
           borderRadius: "var(--radius-lg)",
           padding: "1.25rem",
@@ -85,7 +86,14 @@ export function BrewingCompass({
           transition: "var(--transition-fast)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.5rem" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "0.5rem",
+          }}
+        >
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
             {icon}
             <div>
@@ -134,8 +142,25 @@ export function BrewingCompass({
               >
                 <div>
                   <div style={{ fontWeight: 600, fontSize: "0.9rem" }}>{t.title}</div>
-                  <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "3px", display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                    <span className="badge badge-size" style={{ display: "inline-flex", alignItems: "center", gap: "2px", padding: "1px 5px" }}>
+                  <div
+                    style={{
+                      fontSize: "0.75rem",
+                      color: "var(--text-muted)",
+                      marginTop: "3px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.4rem",
+                    }}
+                  >
+                    <span
+                      className="badge badge-size"
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "2px",
+                        padding: "1px 5px",
+                      }}
+                    >
                       <Shirt size={11} /> {t.size || "S"}
                     </span>
                     <span>• {t.source}</span>
@@ -177,19 +202,26 @@ export function BrewingCompass({
             <Compass size={22} color="var(--accent-amber)" /> Brewing Compass 🧭
           </h2>
           <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>
-            Drag and drop tasks between priority quadrants. Changes reflect instantly in Today Plan & Calendar!
+            Drag and drop tasks between priority quadrants. Changes reflect instantly in Today Plan
+            & Calendar!
           </p>
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.25rem" }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: "1.25rem",
+        }}
+      >
         {renderQuadrant(
           "1. Firefighting 🔥",
           "Critical tasks (Must Priority)",
           "must",
           q1,
           <Flame size={20} color="var(--accent-red)" />,
-          "var(--accent-red)"
+          "var(--accent-red)",
         )}
 
         {renderQuadrant(
@@ -198,7 +230,7 @@ export function BrewingCompass({
           "should",
           q2,
           <Coffee size={20} color="var(--accent-amber)" />,
-          "var(--accent-amber)"
+          "var(--accent-amber)",
         )}
 
         {renderQuadrant(
@@ -207,7 +239,7 @@ export function BrewingCompass({
           "could",
           q3,
           <Sparkles size={20} color="var(--accent-teal)" />,
-          "var(--accent-teal)"
+          "var(--accent-teal)",
         )}
 
         {renderQuadrant(
@@ -216,7 +248,7 @@ export function BrewingCompass({
           "wont",
           q4,
           <Compass size={20} color="var(--text-muted)" />,
-          "var(--text-muted)"
+          "var(--text-muted)",
         )}
       </div>
     </div>

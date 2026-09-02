@@ -1,6 +1,6 @@
-import React from "react";
 import type { MorningBrewTask } from "@morningbrew/core";
-import { Check, Flame, Coffee, Plus, Filter, Battery, Sparkles, Shirt } from "lucide-react";
+import { Battery, Check, Coffee, Filter, Flame, Plus, Shirt, Sparkles } from "lucide-react";
+import React from "react";
 
 interface TodayViewProps {
   tasks: MorningBrewTask[];
@@ -53,7 +53,10 @@ export function TodayView({
               {t.priority === "could" && <span className="badge badge-could">Could</span>}
 
               {t.size && (
-                <span className="badge badge-size" style={{ display: "inline-flex", alignItems: "center", gap: "3px" }}>
+                <span
+                  className="badge badge-size"
+                  style={{ display: "inline-flex", alignItems: "center", gap: "3px" }}
+                >
                   <Shirt size={12} /> {t.size}
                 </span>
               )}
@@ -73,21 +76,21 @@ export function TodayView({
                       t.completionEnergyFeel === "easy"
                         ? "var(--accent-teal-light)"
                         : t.completionEnergyFeel === "draining"
-                        ? "var(--accent-red-light)"
-                        : "var(--accent-amber-light)",
+                          ? "var(--accent-red-light)"
+                          : "var(--accent-amber-light)",
                     color:
                       t.completionEnergyFeel === "easy"
                         ? "var(--accent-teal)"
                         : t.completionEnergyFeel === "draining"
-                        ? "var(--accent-red)"
-                        : "var(--accent-amber)",
+                          ? "var(--accent-red)"
+                          : "var(--accent-amber)",
                   }}
                 >
                   {t.completionEnergyFeel === "easy"
                     ? "🌿 Easy"
                     : t.completionEnergyFeel === "draining"
-                    ? "🔋 Draining"
-                    : "⚡ Standard"}
+                      ? "🔋 Draining"
+                      : "⚡ Standard"}
                 </span>
               )}
             </div>

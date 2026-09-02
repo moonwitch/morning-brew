@@ -1,25 +1,38 @@
+import type { EnergyFeel, MorningBrewTask, MoscowPriority } from "@morningbrew/core";
+import {
+  DEFAULT_TEAM_VALUE_FILTER,
+  TSHIRT_SIZE_MINUTES,
+  applyTeamValueFilter,
+} from "@morningbrew/core";
+import {
+  Calendar,
+  ClipboardList,
+  Compass,
+  Moon,
+  Settings,
+  Sparkles,
+  Sun,
+  User,
+} from "lucide-react";
 import React, { useState, useEffect, useMemo } from "react";
-import type { MorningBrewTask, MoscowPriority, EnergyFeel } from "@morningbrew/core";
-import { TSHIRT_SIZE_MINUTES, applyTeamValueFilter, DEFAULT_TEAM_VALUE_FILTER } from "@morningbrew/core";
-import { ClipboardList, Calendar, Compass, Sun, Moon, Settings, User, Sparkles } from "lucide-react";
 import brewieLogo from "./brewie_logo.jpg";
 import "./theme.css";
 
-import { MorningCheckIn, type EnergyLevel } from "./components/MorningCheckIn.tsx";
-import { TodayView } from "./components/TodayView.tsx";
-import { CalendarView, type CalendarMeeting } from "./components/CalendarView.tsx";
 import { BrewingCompass } from "./components/BrewingCompass.tsx";
-import { QuickCaptureModal } from "./components/QuickCaptureModal.tsx";
-import { FocusMode } from "./components/FocusMode.tsx";
-import { SetAsideDrawer, type SetAsideTaskItem } from "./components/SetAsideDrawer.tsx";
-import { ParkModal } from "./components/ParkModal.tsx";
-import { TaskCompletionEnergyModal } from "./components/TaskCompletionEnergyModal.tsx";
-import type { IntegrationSource } from "./components/SourceManager.tsx";
-import { LoginModal } from "./components/LoginModal.tsx";
-import { SettingsModal, type UseCaseMode } from "./components/SettingsModal.tsx";
+import { type CalendarMeeting, CalendarView } from "./components/CalendarView.tsx";
 import { CaregiverModal } from "./components/CaregiverModal.tsx";
-import { WeeklyReportModal } from "./components/WeeklyReportModal.tsx";
+import { FocusMode } from "./components/FocusMode.tsx";
+import { LoginModal } from "./components/LoginModal.tsx";
+import { type EnergyLevel, MorningCheckIn } from "./components/MorningCheckIn.tsx";
 import { PWAInstallPrompt } from "./components/PWAInstallPrompt.tsx";
+import { ParkModal } from "./components/ParkModal.tsx";
+import { QuickCaptureModal } from "./components/QuickCaptureModal.tsx";
+import { SetAsideDrawer, type SetAsideTaskItem } from "./components/SetAsideDrawer.tsx";
+import { SettingsModal, type UseCaseMode } from "./components/SettingsModal.tsx";
+import type { IntegrationSource } from "./components/SourceManager.tsx";
+import { TaskCompletionEnergyModal } from "./components/TaskCompletionEnergyModal.tsx";
+import { TodayView } from "./components/TodayView.tsx";
+import { WeeklyReportModal } from "./components/WeeklyReportModal.tsx";
 import type { ParsedShorthand } from "./utils/shorthandParser.ts";
 
 export type ThemePreference = "system" | "dark" | "light";
@@ -114,18 +127,60 @@ const INITIAL_TASKS: MorningBrewTask[] = [
 ];
 
 const INITIAL_MEETINGS: CalendarMeeting[] = [
-  { id: "cal-1", title: "Team Standup", startTime: "09:30", endTime: "10:00", source: "google_calendar" },
-  { id: "cal-2", title: "Sprint Review & Roadmap", startTime: "11:00", endTime: "12:00", source: "google_calendar" },
-  { id: "cal-3", title: "1:1 Engineering Sync", startTime: "14:30", endTime: "15:15", source: "google_calendar" },
+  {
+    id: "cal-1",
+    title: "Team Standup",
+    startTime: "09:30",
+    endTime: "10:00",
+    source: "google_calendar",
+  },
+  {
+    id: "cal-2",
+    title: "Sprint Review & Roadmap",
+    startTime: "11:00",
+    endTime: "12:00",
+    source: "google_calendar",
+  },
+  {
+    id: "cal-3",
+    title: "1:1 Engineering Sync",
+    startTime: "14:30",
+    endTime: "15:15",
+    source: "google_calendar",
+  },
 ];
 
 const INITIAL_SOURCES: IntegrationSource[] = [
   { id: "monday", name: "Monday.com", type: "API Plugin", taskCount: 2, status: "connected" },
-  { id: "freshservice", name: "Freshservice IT", type: "Tickets API", taskCount: 1, status: "connected" },
+  {
+    id: "freshservice",
+    name: "Freshservice IT",
+    type: "Tickets API",
+    taskCount: 1,
+    status: "connected",
+  },
   { id: "slack", name: "Slack Actions", type: "Saved Messages", taskCount: 1, status: "connected" },
-  { id: "google_tasks", name: "Google Tasks", type: "Workspace API", taskCount: 2, status: "connected" },
-  { id: "google_calendar", name: "Google Calendar", type: "Calendar API", taskCount: 3, status: "connected" },
-  { id: "quick_capture", name: "Quick Capture Inbox", type: "Local Storage", taskCount: 1, status: "connected" },
+  {
+    id: "google_tasks",
+    name: "Google Tasks",
+    type: "Workspace API",
+    taskCount: 2,
+    status: "connected",
+  },
+  {
+    id: "google_calendar",
+    name: "Google Calendar",
+    type: "Calendar API",
+    taskCount: 3,
+    status: "connected",
+  },
+  {
+    id: "quick_capture",
+    name: "Quick Capture Inbox",
+    type: "Local Storage",
+    taskCount: 1,
+    status: "connected",
+  },
   { id: "markdown", name: "Local Notes", type: "Markdown File", taskCount: 1, status: "connected" },
 ];
 
@@ -147,18 +202,32 @@ function setStorageItem<T>(key: string, value: T): void {
 }
 
 export function App() {
-  const [themePref, setThemePref] = useState<ThemePreference>(() => getStorageItem("mb_theme_pref", "system"));
+  const [themePref, setThemePref] = useState<ThemePreference>(() =>
+    getStorageItem("mb_theme_pref", "system"),
+  );
   const [resolvedTheme, setResolvedTheme] = useState<"dark" | "light">("dark");
 
   const [activeTab, setActiveTab] = useState<"plan" | "calendar" | "compass">("plan");
-  const [userName, setUserName] = useState<string | null>(() => getStorageItem("mb_username", "Kelly Crabbé"));
-  const [useCaseMode, setUseCaseMode] = useState<UseCaseMode>(() => getStorageItem("mb_use_case_mode", "work_and_personal"));
-  const [caregivers, setCaregivers] = useState<string[]>(() => getStorageItem("mb_caregivers", ["Sarah (Caregiver)"]));
+  const [userName, setUserName] = useState<string | null>(() =>
+    getStorageItem("mb_username", "Kelly Crabbé"),
+  );
+  const [useCaseMode, setUseCaseMode] = useState<UseCaseMode>(() =>
+    getStorageItem("mb_use_case_mode", "work_and_personal"),
+  );
+  const [caregivers, setCaregivers] = useState<string[]>(() =>
+    getStorageItem("mb_caregivers", ["Sarah (Caregiver)"]),
+  );
 
   const [sources, setSources] = useState<IntegrationSource[]>(INITIAL_SOURCES);
-  const [tasks, setTasks] = useState<MorningBrewTask[]>(() => getStorageItem("mb_tasks", INITIAL_TASKS));
-  const [energyLevel, setEnergyLevel] = useState<EnergyLevel>(() => getStorageItem("mb_energy", "steady"));
-  const [showMoodReflection, setShowMoodReflection] = useState<boolean>(() => getStorageItem("mb_mood_reflection", false));
+  const [tasks, setTasks] = useState<MorningBrewTask[]>(() =>
+    getStorageItem("mb_tasks", INITIAL_TASKS),
+  );
+  const [energyLevel, setEnergyLevel] = useState<EnergyLevel>(() =>
+    getStorageItem("mb_energy", "steady"),
+  );
+  const [showMoodReflection, setShowMoodReflection] = useState<boolean>(() =>
+    getStorageItem("mb_mood_reflection", false),
+  );
 
   const [isQuickCaptureOpen, setIsQuickCaptureOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -175,7 +244,7 @@ export function App() {
     const updateTheme = () => {
       let active: "dark" | "light" = "dark";
       if (themePref === "system") {
-        const isSystemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const isSystemDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
         active = isSystemDark ? "dark" : "light";
       } else {
         active = themePref;
@@ -264,7 +333,7 @@ export function App() {
     const finalSetAside: SetAsideTaskItem[] = [];
 
     for (const ex of excluded) {
-      finalSetAside.push({ task: ex.task, explanation: ex.explanation });
+      finalSetAside.push({ task: ex.task, explanation: ex.verdict.explanation });
     }
 
     for (const t of included) {
@@ -311,21 +380,17 @@ export function App() {
       setEnergyTaskTarget(target);
       setTasks((prev) =>
         prev.map((t) =>
-          t.id === taskId
-            ? { ...t, status: "done", completedAt: new Date().toISOString() }
-            : t
-        )
+          t.id === taskId ? { ...t, status: "done", completedAt: new Date().toISOString() } : t,
+        ),
       );
     } else {
-      setTasks((prev) =>
-        prev.map((t) => (t.id === taskId ? { ...t, status: "todo" } : t))
-      );
+      setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, status: "todo" } : t)));
     }
   };
 
   const handleEnergyFeelSubmit = (taskId: string, feel: EnergyFeel) => {
     setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, completionEnergyFeel: feel } : t))
+      prev.map((t) => (t.id === taskId ? { ...t, completionEnergyFeel: feel } : t)),
     );
   };
 
@@ -343,21 +408,17 @@ export function App() {
                 previousStatus: t.status,
               },
             }
-          : t
-      )
+          : t,
+      ),
     );
   };
 
   const handlePullIntoToday = (taskId: string) => {
-    setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, priority: "must" } : t))
-    );
+    setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, priority: "must" } : t)));
   };
 
   const handleUpdateTaskPriority = (taskId: string, newPriority: MoscowPriority) => {
-    setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, priority: newPriority } : t))
-    );
+    setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, priority: newPriority } : t)));
   };
 
   const handleAddCaregiver = (name: string) => {
@@ -365,7 +426,9 @@ export function App() {
   };
 
   const toggleDayNightSlider = () => {
-    setThemePref((prev) => (prev === "dark" || (prev === "system" && resolvedTheme === "dark") ? "light" : "dark"));
+    setThemePref((prev) =>
+      prev === "dark" || (prev === "system" && resolvedTheme === "dark") ? "light" : "dark",
+    );
   };
 
   return (
@@ -408,11 +471,7 @@ export function App() {
         </div>
 
         <div className="nav-actions">
-          <button
-            type="button"
-            className="user-profile-btn"
-            onClick={() => setIsLoginOpen(true)}
-          >
+          <button type="button" className="user-profile-btn" onClick={() => setIsLoginOpen(true)}>
             <div className="avatar-circle">
               {userName ? userName.charAt(0) : <User size={14} />}
             </div>
@@ -427,7 +486,11 @@ export function App() {
             <Sun size={14} color="#d97706" />
             <Moon size={14} color="#f5ebe0" />
             <div className="theme-slider-thumb">
-              {resolvedTheme === "dark" ? <Moon size={12} color="#f5ebe0" /> : <Sun size={12} color="#140f0c" />}
+              {resolvedTheme === "dark" ? (
+                <Moon size={12} color="#f5ebe0" />
+              ) : (
+                <Sun size={12} color="#140f0c" />
+              )}
             </div>
           </div>
 
@@ -591,7 +654,11 @@ export function App() {
         sources={sources}
         onToggleSource={(id) => {
           setSources((prev) =>
-            prev.map((s) => (s.id === id ? { ...s, status: s.status === "connected" ? "offline" : "connected" } : s))
+            prev.map((s) =>
+              s.id === id
+                ? { ...s, status: s.status === "connected" ? "offline" : "connected" }
+                : s,
+            ),
           );
         }}
         showMoodReflection={showMoodReflection}

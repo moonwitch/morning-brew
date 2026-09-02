@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
 import type { MorningBrewTask } from "@morningbrew/core";
+import React, { useState, useEffect } from "react";
 
 interface FocusModeProps {
   task: MorningBrewTask | null;
@@ -47,11 +47,7 @@ export function FocusMode({ task, onClose, onComplete, onPark }: FocusModeProps)
         <div className="focus-timer">{timeFormatted}</div>
 
         <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
-          <button
-            type="button"
-            className="action-btn"
-            onClick={() => setIsRunning(!isRunning)}
-          >
+          <button type="button" className="action-btn" onClick={() => setIsRunning(!isRunning)}>
             {isRunning ? "Pause Timer" : "Resume Timer"}
           </button>
           <button

@@ -70,7 +70,12 @@ export function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps) {
           <button
             type="button"
             className="action-btn"
-            style={{ padding: "0.6rem", color: "var(--text-muted)", fontSize: "0.85rem", width: "100%" }}
+            style={{
+              padding: "0.6rem",
+              color: "var(--text-muted)",
+              fontSize: "0.85rem",
+              width: "100%",
+            }}
             onClick={onClose}
           >
             Continue as Guest

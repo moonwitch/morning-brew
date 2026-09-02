@@ -6,11 +6,7 @@
  * that a day full of urgent-but-low-value work reads as productive and isn't.
  */
 
-import {
-  type MorningBrewTask,
-  type MoscowPriority,
-  isActive,
-} from "./task.ts";
+import { type MorningBrewTask, type MoscowPriority, isActive } from "./task.ts";
 
 export type TeamValueScore = 0 | 1 | 2 | 3 | 4 | 5;
 

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
 import type { MorningBrewTask } from "@morningbrew/core";
+import type React from "react";
+import { useState } from "react";
 
 interface ParkModalProps {
   task: MorningBrewTask | null;
@@ -9,7 +10,9 @@ interface ParkModalProps {
 
 export function ParkModal({ task, onClose, onParkSubmit }: ParkModalProps) {
   const [reason, setReason] = useState("");
-  const [resurfacePreset, setResurfacePreset] = useState<"tomorrow" | "next-week" | "someday">("tomorrow");
+  const [resurfacePreset, setResurfacePreset] = useState<"tomorrow" | "next-week" | "someday">(
+    "tomorrow",
+  );
 
   if (!task) return null;
 
@@ -40,12 +43,23 @@ export function ParkModal({ task, onClose, onParkSubmit }: ParkModalProps) {
       >
         <h3>Park Task: "{task.title}"</h3>
         <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>
-          Parking protects working memory by safely removing this task from view until resurface date.
+          Parking protects working memory by safely removing this task from view until resurface
+          date.
         </p>
 
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <form
+          onSubmit={handleSubmit}
+          style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+        >
           <div>
-            <label style={{ fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.5rem" }}>
+            <label
+              style={{
+                fontSize: "0.85rem",
+                fontWeight: 600,
+                display: "block",
+                marginBottom: "0.5rem",
+              }}
+            >
               Reason for parking <span style={{ color: "var(--accent-red)" }}>*</span>
             </label>
             <input
@@ -56,12 +70,18 @@ export function ParkModal({ task, onClose, onParkSubmit }: ParkModalProps) {
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               required
-              autoFocus
             />
           </div>
 
           <div>
-            <label style={{ fontSize: "0.85rem", fontWeight: 600, display: "block", marginBottom: "0.5rem" }}>
+            <label
+              style={{
+                fontSize: "0.85rem",
+                fontWeight: 600,
+                display: "block",
+                marginBottom: "0.5rem",
+              }}
+            >
               Resurface Date
             </label>
             <div style={{ display: "flex", gap: "0.5rem" }}>
@@ -89,7 +109,14 @@ export function ParkModal({ task, onClose, onParkSubmit }: ParkModalProps) {
             </div>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem", marginTop: "1rem" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "0.75rem",
+              marginTop: "1rem",
+            }}
+          >
             <button type="button" className="action-btn" onClick={onClose}>
               Cancel
             </button>

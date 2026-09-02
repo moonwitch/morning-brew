@@ -1,6 +1,6 @@
+import type { EnergyFeel, MorningBrewTask } from "@morningbrew/core";
+import { BatteryCharging, CheckCircle2, Sparkles, X } from "lucide-react";
 import React from "react";
-import type { MorningBrewTask, EnergyFeel } from "@morningbrew/core";
-import { Sparkles, BatteryCharging, CheckCircle2, X } from "lucide-react";
 import brewieLogo from "../brewie_logo.jpg";
 
 interface TaskCompletionEnergyModalProps {
@@ -30,7 +30,11 @@ export function TaskCompletionEnergyModal({
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <img src={brewieLogo} alt="Brewie Mascot" style={{ width: 36, height: 36, borderRadius: "50%" }} />
+            <img
+              src={brewieLogo}
+              alt="Brewie Mascot"
+              style={{ width: 36, height: 36, borderRadius: "50%" }}
+            />
             <h2 style={{ fontSize: "1.15rem" }}>Task Complete! How did it feel? ☕</h2>
           </div>
           <button type="button" className="action-btn" onClick={onClose}>

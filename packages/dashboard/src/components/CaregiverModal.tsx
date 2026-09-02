@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Users, Heart, Plus, Check, X } from "lucide-react";
+import { Check, Heart, Plus, Users, X } from "lucide-react";
+import type React from "react";
+import { useState } from "react";
 
 interface CaregiverModalProps {
   isOpen: boolean;
@@ -42,7 +43,8 @@ export function CaregiverModal({
         </div>
 
         <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>
-          Allow trusted caregivers, partners, or team leads to co-author your tasks, share gentle reminders, and support your daily energy planning.
+          Allow trusted caregivers, partners, or team leads to co-author your tasks, share gentle
+          reminders, and support your daily energy planning.
         </p>
 
         <form onSubmit={handleSubmit} style={{ display: "flex", gap: "0.5rem" }}>
@@ -56,14 +58,23 @@ export function CaregiverModal({
           <button
             type="submit"
             className="action-btn"
-            style={{ backgroundColor: "var(--accent-teal)", color: "#fff", fontWeight: 600, display: "flex", alignItems: "center", gap: "0.3rem" }}
+            style={{
+              backgroundColor: "var(--accent-teal)",
+              color: "#fff",
+              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              gap: "0.3rem",
+            }}
           >
             <Plus size={14} /> Invite
           </button>
         </form>
 
         <div style={{ marginTop: "1rem" }}>
-          <h3 style={{ fontSize: "0.95rem", marginBottom: "0.5rem" }}>Active Co-Brewers ({caregivers.length}):</h3>
+          <h3 style={{ fontSize: "0.95rem", marginBottom: "0.5rem" }}>
+            Active Co-Brewers ({caregivers.length}):
+          </h3>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
             {caregivers.length === 0 ? (
               <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontStyle: "italic" }}>

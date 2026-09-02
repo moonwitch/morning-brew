@@ -1,11 +1,11 @@
-import React from "react";
 import type { MorningBrewTask } from "@morningbrew/core";
+import React from "react";
 
 export interface CalendarMeeting {
   id: string;
   title: string;
   startTime: string; // e.g. "09:30"
-  endTime: string;   // e.g. "10:00"
+  endTime: string; // e.g. "10:00"
   location?: string;
   source: "google_calendar" | "outlook";
 }
@@ -17,6 +17,10 @@ interface CalendarViewProps {
 }
 
 export function CalendarView({ meetings, tasks, onStartFocus }: CalendarViewProps) {
+  const task0 = tasks[0];
+  const task1 = tasks[1];
+  const task2 = tasks[2];
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       {/* Calendar Header Card */}
@@ -35,13 +39,21 @@ export function CalendarView({ meetings, tasks, onStartFocus }: CalendarViewProp
         <div>
           <h2>Today's Schedule & Meetings</h2>
           <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", marginTop: "4px" }}>
-            3 Calendar Meetings synced from <strong>Google Calendar</strong>. Tasks are auto-scheduled in open focus gaps.
+            3 Calendar Meetings synced from <strong>Google Calendar</strong>. Tasks are
+            auto-scheduled in open focus gaps.
           </p>
         </div>
 
         <div style={{ textAlign: "right" }}>
           <span className="badge badge-could">3 Meetings (1.75h)</span>
-          <div style={{ fontSize: "0.85rem", color: "var(--accent-teal)", fontWeight: 600, marginTop: "4px" }}>
+          <div
+            style={{
+              fontSize: "0.85rem",
+              color: "var(--accent-teal)",
+              fontWeight: 600,
+              marginTop: "4px",
+            }}
+          >
             3.5h Open Focus Time Remaining
           </div>
         </div>
@@ -55,7 +67,9 @@ export function CalendarView({ meetings, tasks, onStartFocus }: CalendarViewProp
           <div className="timeline-event-card">
             <div>
               <div style={{ fontWeight: 600 }}>📅 Team Standup</div>
-              <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>09:30 - 10:00 • Google Calendar</div>
+              <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                09:30 - 10:00 • Google Calendar
+              </div>
             </div>
             <span className="badge badge-size">Meeting</span>
           </div>
@@ -64,19 +78,20 @@ export function CalendarView({ meetings, tasks, onStartFocus }: CalendarViewProp
         {/* 10:00 - 11:00 Focus Slot */}
         <div className="timeline-row">
           <div className="timeline-hour">10:00</div>
-          {tasks[0] ? (
+          {task0 ? (
             <div className="timeline-task-card">
               <div>
-                <div style={{ fontWeight: 600 }}>🎯 Focus Slot: {tasks[0].title}</div>
+                <div style={{ fontWeight: 600 }}>🎯 Focus Slot: {task0.title}</div>
                 <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
-                  10:00 - 11:00 • Priority: {tasks[0].priority.toUpperCase()} ({tasks[0].size})
+                  10:00 - 11:00 • Priority: {(task0.priority || "should").toUpperCase()} (
+                  {task0.size || "S"})
                 </div>
               </div>
               <button
                 type="button"
                 className="action-btn"
                 style={{ backgroundColor: "var(--accent-teal)", color: "#fff", fontWeight: 600 }}
-                onClick={() => onStartFocus(tasks[0])}
+                onClick={() => onStartFocus(task0)}
               >
                 Start Focus
               </button>
@@ -92,7 +107,9 @@ export function CalendarView({ meetings, tasks, onStartFocus }: CalendarViewProp
           <div className="timeline-event-card">
             <div>
               <div style={{ fontWeight: 600 }}>📅 Sprint Review & Roadmap</div>
-              <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>11:00 - 12:00 • Google Calendar</div>
+              <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                11:00 - 12:00 • Google Calendar
+              </div>
             </div>
             <span className="badge badge-size">Meeting</span>
           </div>
@@ -101,19 +118,20 @@ export function CalendarView({ meetings, tasks, onStartFocus }: CalendarViewProp
         {/* 12:00 - 12:30 Focus Slot */}
         <div className="timeline-row">
           <div className="timeline-hour">12:00</div>
-          {tasks[1] ? (
+          {task1 ? (
             <div className="timeline-task-card">
               <div>
-                <div style={{ fontWeight: 600 }}>🎯 Focus Slot: {tasks[1].title}</div>
+                <div style={{ fontWeight: 600 }}>🎯 Focus Slot: {task1.title}</div>
                 <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
-                  12:00 - 12:30 • Priority: {tasks[1].priority.toUpperCase()} ({tasks[1].size})
+                  12:00 - 12:30 • Priority: {(task1.priority || "should").toUpperCase()} (
+                  {task1.size || "S"})
                 </div>
               </div>
               <button
                 type="button"
                 className="action-btn"
                 style={{ backgroundColor: "var(--accent-teal)", color: "#fff", fontWeight: 600 }}
-                onClick={() => onStartFocus(tasks[1])}
+                onClick={() => onStartFocus(task1)}
               >
                 Start Focus
               </button>
@@ -129,7 +147,9 @@ export function CalendarView({ meetings, tasks, onStartFocus }: CalendarViewProp
           <div className="timeline-event-card">
             <div>
               <div style={{ fontWeight: 600 }}>📅 1:1 Engineering Sync</div>
-              <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>14:30 - 15:15 • Google Calendar</div>
+              <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                14:30 - 15:15 • Google Calendar
+              </div>
             </div>
             <span className="badge badge-size">Meeting</span>
           </div>
@@ -138,19 +158,20 @@ export function CalendarView({ meetings, tasks, onStartFocus }: CalendarViewProp
         {/* 15:30 - 16:30 Focus Slot */}
         <div className="timeline-row">
           <div className="timeline-hour">15:30</div>
-          {tasks[2] ? (
+          {task2 ? (
             <div className="timeline-task-card">
               <div>
-                <div style={{ fontWeight: 600 }}>🎯 Focus Slot: {tasks[2].title}</div>
+                <div style={{ fontWeight: 600 }}>🎯 Focus Slot: {task2.title}</div>
                 <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
-                  15:30 - 16:30 • Priority: {tasks[2].priority.toUpperCase()} ({tasks[2].size})
+                  15:30 - 16:30 • Priority: {(task2.priority || "should").toUpperCase()} (
+                  {task2.size || "S"})
                 </div>
               </div>
               <button
                 type="button"
                 className="action-btn"
                 style={{ backgroundColor: "var(--accent-teal)", color: "#fff", fontWeight: 600 }}
-                onClick={() => onStartFocus(tasks[2])}
+                onClick={() => onStartFocus(task2)}
               >
                 Start Focus
               </button>

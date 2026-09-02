@@ -1,8 +1,8 @@
+import { Settings, Sparkles } from "lucide-react";
 import React from "react";
+import { FaSlack, FaTicketSimple } from "react-icons/fa6";
 import { SiGooglecalendar, SiGoogletasks, SiMarkdown } from "react-icons/si";
 import { TbBrandMonday } from "react-icons/tb";
-import { FaSlack, FaTicketSimple } from "react-icons/fa6";
-import { Sparkles, Settings } from "lucide-react";
 
 export interface IntegrationSource {
   id: string;
@@ -45,7 +45,14 @@ export function SourceManager({ sources, onOpenSettings }: SourceManagerProps) {
   return (
     <div className="compact-integrations-bar">
       <div className="integration-pills">
-        <span style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary)", marginRight: "0.5rem" }}>
+        <span
+          style={{
+            fontSize: "0.85rem",
+            fontWeight: 600,
+            color: "var(--text-secondary)",
+            marginRight: "0.5rem",
+          }}
+        >
           Active Integration Sources ({activeSources.length}):
         </span>
         {activeSources.map((source) => (

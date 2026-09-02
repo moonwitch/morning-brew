@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
 import { Download, Wifi, WifiOff, X } from "lucide-react";
+import React, { useState, useEffect } from "react";
 import brewieLogo from "../brewie_logo.jpg";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -17,7 +17,9 @@ export function PWAInstallPrompt() {
     // Detect iOS devices
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
-    const isStandalone = window.matchMedia("(display-mode: standalone)").matches || (navigator as any).standalone;
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (navigator as unknown as { standalone?: boolean }).standalone;
     if (isIOSDevice && !isStandalone) {
       setIsIOS(true);
     }

@@ -6,7 +6,10 @@
   "module": "src/server.ts",
   "scripts": {
     "dev": "bun --hot src/server.ts",
-    "typecheck": "tsc --noEmit"
+    "start": "bun src/server.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "build": "bun build src/frontend.tsx --outdir dist"
   },
   "dependencies": {
     "@icons-pack/react-simple-icons": "^13.13.0",

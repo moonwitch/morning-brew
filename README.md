@@ -13,12 +13,11 @@ lost, and every exclusion explained.**
 Tooling is pinned in `.mise.toml`:
 
 ```sh
-mise install     # installs bun 1.3.6
+mise install     # installs bun 1.3.14
 bun install      # installs workspace dependencies
 ```
 
 Bun is the only JS runtime and package manager here — no npm, yarn, or pnpm.
-`uv` handles Python if a Python-based source plugin ever lands.
 
 ## Setup
 
@@ -28,13 +27,21 @@ cp .env.example .env    # then fill in MONDAY_API_TOKEN
 
 `.env` is git-ignored. Bun loads it automatically — don't add `dotenv`.
 
-## Commands
+## CLI Commands & Scripts
 
-```sh
-bun test              # run the suite
-bun run typecheck     # tsc --noEmit across the workspace
-mise run test         # same, via mise tasks
-```
+All primary tasks can be executed directly from your terminal using Bun CLI commands:
+
+| Command | Action | Description |
+| :--- | :--- | :--- |
+| **`bun dev`** | **`bun --hot packages/dashboard/src/server.ts`** | Starts the MorningBrew dashboard server in hot-reload mode on `http://localhost:3000` |
+| **`bun start`** | **`bun packages/dashboard/src/server.ts`** | Runs the production dashboard server |
+| **`bun test`** | **`bun test`** | Runs the complete unit test suite across all workspace packages |
+| **`bun run typecheck`** | **`tsc --noEmit`** | Performs full workspace TypeScript static type checks |
+| **`bun run lint`** | **`biome check .`** | Checks code formatting and lints with Biome |
+| **`bun run lint:fix`** | **`biome check --write .`** | Auto-formats and fixes linting issues |
+| **`bun run build`** | **`bun build ...`** | Bundles the dashboard frontend application into `dist` |
+
+---
 
 ## Layout
 
@@ -43,9 +50,14 @@ packages/
   core/               @morningbrew/core — task model, plugin contract, filters
     src/
       task.ts         MorningBrewTask, T-shirt sizes, MoSCoW, status, parking
-      filters.ts      Garrett's Team Value filter
+      filters.ts      G-Factor (Garrett's Team Value filter)
       plugin.ts       MorningBrewSourcePlugin, PluginRegistry
-      constants.ts    Monday board id and other non-secret constants
+      constants.ts    Monday board id and TSHIRT_SIZE_MINUTES constants
+  dashboard/          @morningbrew/dashboard — React PWA dashboard server & UI
+    src/
+      App.tsx         Main dashboard container & navigation shell
+      server.ts       Bun.serve() backend entrypoint serving app on http://localhost:3000
+      sw.js           Offline PWA Service Worker
 ```
 
 Downstream packages import from `@morningbrew/core` only — never from a deeper
@@ -77,7 +89,7 @@ back on the day.
 Parked is distinct from `blocked` — blocked is involuntary and waits on someone
 else; parked is a choice.
 
-### Garrett's Team Value filter
+### G-Factor (Garrett's Team Value filter)
 
 The gate a task clears before it takes up space in a day plan. It scores on
 **team value** (0–5) rather than urgency, on the premise that a day full of
@@ -128,12 +140,9 @@ const plugin: MorningBrewSourcePlugin<MyConfig, MyRecord> = {
 };
 ```
 
-The Monday board wired for status and parking write-backs is
-`18425029943` (`DEFAULT_MONDAY_BOARD_ID`, overridable via `MONDAY_BOARD_ID`).
-
-## Privacy
+## Privacy & Offline PWA
 
 This dashboard aggregates real task content from work systems. `.gitignore`
-covers secrets, the local task cache, sync state, plan history, and logs with
-deliberately broad patterns. `MORNINGBREW_REDACT_LOGS` defaults to `true` —
-logs are the easiest place to leak work content.
+covers secrets, local task cache, sync state, and logs. `MORNINGBREW_REDACT_LOGS`
+defaults to `true`.
+The dashboard operates as a Progressive Web App (PWA) with Service Worker offline caching and local storage persistence.
